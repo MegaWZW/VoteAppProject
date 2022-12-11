@@ -11,6 +11,11 @@ public class GenreService implements IGenreService {
 		this.dao = dao;
 	}
 
+	/**
+	 * метод для получения Genres DTO
+	 * @param dao ссылка на GenresDAO
+	 * @return DTO
+	 */
 	@Override
 	public GenresDTO getTransferObj(IGenresDAO dao) {
 		return new GenresDTO(dao.getData());

@@ -1,11 +1,8 @@
 package com.course.app.dao;
 
 import com.course.app.dao.api.IVotesDAO;
-import com.course.app.dao.factories.VotesDAOMemorySingleton;
 import com.course.app.services.Vote;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class VotesDAO implements IVotesDAO {
@@ -15,15 +12,24 @@ public class VotesDAO implements IVotesDAO {
 		this.votes = votes;
 	}
 
+	/**
+	 * Метод для получения списка голосов
+	 * @return список, содержащий объекты Голос
+	 */
 	@Override
 	public List<Vote> getData() {
-		List<Vote> dataCopy = new ArrayList<>();
-		Collections.copy(dataCopy, votes);
-		return dataCopy;
+		return votes;
 	}
 
+	/**
+	 * Метод для сохранения голоса в список
+	 * @param vote объект типа Голос, содержащий информацию о выбранных
+	 *             пользователем музыкальных жанрах, исполнителе, времени принятия голоса,
+	 *             а также текст сообщениия, оставленного пользователем
+	 *
+	 */
 	@Override
 	public void save(Vote vote) {
-		VotesDAOMemorySingleton.getInstance().votes.add(vote);
+		votes.add(vote);
 	}
 }

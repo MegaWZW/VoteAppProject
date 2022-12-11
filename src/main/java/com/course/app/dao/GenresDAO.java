@@ -1,11 +1,7 @@
 package com.course.app.dao;
 
 import com.course.app.dao.api.IGenresDAO;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
-import com.course.app.dao.factories.GenresDAOMemorySingleton;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class GenresDAO implements IGenresDAO {
@@ -15,21 +11,31 @@ public class GenresDAO implements IGenresDAO {
 		this.genres = genres;
 	}
 
+	/**
+	 * Метод для получения списка музыкальных жанров, хранящихся в DAO
+	 * @return
+	 */
 	@Override
 	public List<String> getData() {
-		List<String> dataCopy = new ArrayList<>();
-		Collections.copy(dataCopy,genres);
-		return dataCopy;
+		return genres;
 	}
 
+	/**
+	 * Добавляет музыкальный жанр в список для голосования
+	 * @param genreName наименование жанра, который нужно добавить
+	 */
 	@Override
 	public void addPosition(String genreName) {
-		GenresDAOMemorySingleton.getInstance().genres.add(genreName);
+		genres.add(genreName);
 	}
 
+	/**
+	 * Удаляет музыкальный жанр из списка для голосования
+	 * @param genreName наименование жанра, который нужно удалить
+	 */
 	@Override
 	public void deletePosition(String genreName) {
-		GenresDAOMemorySingleton.getInstance().genres.remove(genreName);
+		genres.remove(genreName);
 	}
 
 }

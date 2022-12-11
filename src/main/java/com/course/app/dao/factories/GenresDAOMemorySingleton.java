@@ -1,12 +1,17 @@
 package com.course.app.dao.factories;
 
 import com.course.app.dao.GenresDAO;
+import com.course.app.dao.api.IGenresDAO;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Класс для получения уникального объекта GenresDAO
+ * Реализован с помощью паттерна синглтон
+ */
 public class GenresDAOMemorySingleton {
-	private volatile static GenresDAO instance;
+	private volatile static IGenresDAO instance;
 	private static List<String> genres = Arrays.asList(
 			"Pop",
 			"Hip hop",
@@ -21,7 +26,7 @@ public class GenresDAOMemorySingleton {
 
 	private GenresDAOMemorySingleton(){};
 
-	public static GenresDAO getInstance() {
+	public static IGenresDAO getInstance() {
 		if(instance == null) {
 			synchronized (GenresDAOMemorySingleton.class) {
 				if(instance == null){

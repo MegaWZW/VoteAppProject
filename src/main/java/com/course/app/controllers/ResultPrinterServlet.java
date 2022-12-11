@@ -1,6 +1,11 @@
 package com.course.app.controllers;
 
-import com.course.app.VotesStorage;
+import com.course.app.services.Result;
+import com.course.app.services.SortedResult;
+import com.course.app.services.api.IStatisticService;
+import com.course.app.services.api.IVoteService;
+import com.course.app.services.factories.StatisticServiceMemorySingleton;
+import com.course.app.services.factories.VoteServiceMemorySingleton;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,61 +14,49 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Map;
 
+/**
+ * Сервлет для вывода результатов голосования
+ */
 @WebServlet(name = "ResultPrinterServlet", urlPatterns = "/result")
 public class ResultPrinterServlet extends HttpServlet {
 
+	private final IVoteService service;
+	private final IStatisticService stat;
+
+	public ResultPrinterServlet(){
+		this.service = VoteServiceMemorySingleton.getInstance();
+		this.stat = StatisticServiceMemorySingleton.getInstance();
+	}
 	protected void doGet(HttpServletRequest request,
 	                     HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html; charset=utf-8");
 		request.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 
-		VotesStorage votesStorage = VotesStorage.getInstance();
-
-		Map<String, Integer> artistMap = votesStorage.getArtistsMap();
-		List<Map.Entry<String, Integer>> artistList = new ArrayList<>(artistMap.entrySet());
-		Collections.sort(artistList, new Comparator<Map.Entry<String, Integer>>() {
-			@Override
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return o2.getValue() - o1.getValue();
-			}
-		});
-
-		Map<String, Integer> genreMap = votesStorage.getGenresMap();
-		List<Map.Entry<String, Integer>> genreList = new ArrayList<>(genreMap.entrySet());
-		Collections.sort(genreList, new Comparator<Map.Entry<String, Integer>>() {
-			@Override
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return o2.getValue() - o1.getValue();
-			}
-		});
-
-		Map<String, String> textMap = votesStorage.getTextMap();
-		List<String> listDate = new ArrayList<>();
-		for (String dt : textMap.keySet()) {
-			listDate.add(dt);
-		}
-		Collections.sort(listDate);
+		//подсчёт результатов голосования и создание объекта Result
+		Result res = stat.calculate();
+		//сортировка результатов голосования
+		SortedResult sortRes = service.sort(res);
 
 
 		/*
 		print result
 		 */
-		for(Map.Entry<String, Integer> artist : artistList) {
+		for(Map.Entry<String, Integer> artist : sortRes.getArtistsMap().entrySet()) {
 			out.write("<p>" + artist.getKey() + " ---------- " + artist.getValue() + " points</p>");
 		}
 		out.write("<p>*****************************</p>");
 
-		for(Map.Entry<String, Integer> genre : genreList) {
+		for(Map.Entry<String, Integer> genre : sortRes.getGenresMap().entrySet()) {
 			out.write("<p>" + genre.getKey() + " ---------- " + genre.getValue() + " points</p>");
 		}
 		out.write("<p>*****************************</p>");
 
 
-		for(String date : listDate) {
-			out.write("<p>" + date + ": " + textMap.get(date) + "</p>");
+		for(Map.Entry<String, String> genre : sortRes.getMessageMap().entrySet()) {
+			out.write("<p>" + genre.getKey() + ": " + genre.getValue());
 		}
 	}
 }

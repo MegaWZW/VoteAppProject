@@ -1,10 +1,7 @@
 package com.course.app.dao;
 
 import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ArtistsDAO implements IArtistsDAO {
@@ -14,20 +11,30 @@ public class ArtistsDAO implements IArtistsDAO {
 		this.artists = artists;
 	}
 
+	/**
+	 * Метод для получения списка артистов, хранящихся в DAO
+	 * @return список имён артистов
+	 */
 	@Override
 	public List<String> getData() {
-		List<String> dataCopy = new ArrayList<>();
-		Collections.copy(dataCopy, artists);
-		return dataCopy;
+		return artists;
 	}
 
+	/**
+	 * Добавляет имя исполнителя с список для голосования
+	 * @param artistName имя исполнителя, которого нужно добавить
+	 */
 	@Override
 	public void addPosition(String artistName) {
-		ArtistsDAOMemorySingleton.getInstance().artists.add(artistName);
+		artists.add(artistName);
 	}
 
+	/**
+	 * Метод для удаления артиста из списка для голосования
+	 * @param artistName имя исполнителя, которого необходимо удалить
+	 */
 	@Override
 	public void deletePosition(String artistName) {
-		ArtistsDAOMemorySingleton.getInstance().artists.remove(artistName);
+		artists.remove(artistName);
 	}
 }

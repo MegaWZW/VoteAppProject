@@ -1,12 +1,17 @@
 package com.course.app.dao.factories;
 
 import com.course.app.dao.ArtistsDAO;
+import com.course.app.dao.api.IArtistsDAO;
 
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Класс для получения уникального объекта ArtistsDAO
+ * Реализован с помощью паттерна синглтон
+ */
 public class ArtistsDAOMemorySingleton {
-	private volatile static ArtistsDAO instance;
+	private volatile static IArtistsDAO instance;
 	private static List<String> artists = Arrays.asList(
 			"Adele",
 			"Billie Eilish",
@@ -16,7 +21,7 @@ public class ArtistsDAOMemorySingleton {
 
 	private ArtistsDAOMemorySingleton(){};
 
-	public static ArtistsDAO getInstance() {
+	public static IArtistsDAO getInstance() {
 		if(instance == null) {
 			synchronized (ArtistsDAOMemorySingleton.class) {
 				if (instance == null) {

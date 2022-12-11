@@ -1,6 +1,7 @@
 package com.course.app.controllers;
 
-import com.course.app.Artists;
+import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
+import com.course.app.dto.ArtistsDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,17 +18,20 @@ import java.io.PrintWriter;
 @WebServlet(name = "ArtistInfoServlet", urlPatterns = "/artists")
 public class ArtistInfoServlet extends HttpServlet {
 
+
     protected void doGet (HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html; charset=utf-8");
         request.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
 
-       Artists art = Artists.getInstance();
+        ArtistsDTO dto = new ArtistsDTO(ArtistsDAOMemorySingleton.getInstance().getData());
+
+        PrintWriter out = response.getWriter();
 
         writer.write("<p><span style='color: green;'>List of artists(choose one):</span></p>");
 
-        for (String artist : art.getArtists()) {
+        for (String artist : dto.getArtists()){
             writer.write("<p><span style='color: green;'>" + artist + "</span></p>");
         }
 

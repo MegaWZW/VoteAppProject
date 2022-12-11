@@ -12,6 +12,11 @@ public class ArtistService implements IArtistService {
 		this.dao = dao;
 	}
 
+	/**
+	 * метод для получения Artists DTO
+	 * @param dao ссылка на ArtistsDAO
+	 * @return DTO
+	 */
 	@Override
 	public ArtistsDTO getTransferObj(IArtistsDAO dao) {
 		return new ArtistsDTO(dao.getData());

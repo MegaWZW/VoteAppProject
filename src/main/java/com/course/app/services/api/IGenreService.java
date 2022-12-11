@@ -5,5 +5,10 @@ import com.course.app.dto.GenresDTO;
 
 
 public interface IGenreService {
+	/**
+	 * Метод для получения объета GenresDTO
+	 * @param dao ссылка на GenresDAO
+	 * @return возвращает DTO
+	 */
 	GenresDTO getTransferObj (IGenresDAO dao);
 }

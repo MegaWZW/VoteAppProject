@@ -1,6 +1,7 @@
 package com.course.app.controllers;
 
-import com.course.app.Genres;
+import com.course.app.dao.factories.GenresDAOMemorySingleton;
+import com.course.app.dto.GenresDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
- * Сервляет для вывода информации о жанрах
+ * Сервлет для вывода информации о жанрах
  */
 @WebServlet(name="GenreInfoServlet", urlPatterns = "/genres")
 public class GenreInfoServlet extends HttpServlet {
@@ -22,11 +23,11 @@ public class GenreInfoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
 
-        Genres gen = Genres.getInstance();
+        GenresDTO dto = new GenresDTO(GenresDAOMemorySingleton.getInstance().getData());
 
         writer.write("<p><span style='color: blue;'>List of genres(choose from 3 to 5):</span></p>");
 
-        for (String genre : gen.getGenres()) {
+        for (String genre : dto.getGenres()) {
             writer.write("<p><span style='color: blue;'>" + genre + "</span></p>");
         }
         writer.write("<p></p>");

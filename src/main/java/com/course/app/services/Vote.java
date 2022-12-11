@@ -7,6 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Класс объектов типа Голос
+ * При создании данного объекта в конструкторе присваивается системное время создания объекта
+ * Данный объект создаётся после валидации в VoteService
+ */
 public class Vote {
 	private String artist;
 	private String[] genres;
