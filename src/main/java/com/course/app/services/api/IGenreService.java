@@ -10,5 +10,5 @@ public interface IGenreService {
 	 * @param dao ссылка на GenresDAO
 	 * @return возвращает DTO
 	 */
-	GenresDTO getTransferObj (IGenresDAO dao);
+	GenresDTO getTransferObj ();
 }

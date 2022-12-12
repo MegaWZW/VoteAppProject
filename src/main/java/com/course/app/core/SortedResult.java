@@ -1,17 +1,16 @@
-package com.course.app.services;
+package com.course.app.core;
 
 import java.util.Map;
 
 /**
- * Класс для объектов, содержащих информацию о результатах голосования
- * Результаты храняться в HashMap'ах
+ * Класс для объектов, содержащих информацию о результатх голосования в отсортированном виде
  */
-public class Result {
+public class SortedResult {
 	private Map<String, Integer> artistsMap;
 	private Map<String, Integer> genresMap;
 	private Map<String, String> messageMap;
 
-	public Result(Map<String, Integer> artistsMap, Map<String, Integer> genresMap, Map<String, String> messageMap) {
+	public SortedResult(Map<String, Integer> artistsMap, Map<String, Integer> genresMap, Map<String, String> messageMap) {
 		this.artistsMap = artistsMap;
 		this.genresMap = genresMap;
 		this.messageMap = messageMap;

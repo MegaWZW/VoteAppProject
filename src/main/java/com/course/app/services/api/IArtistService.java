@@ -9,6 +9,6 @@ public interface IArtistService {
 	 * @param dao ссылка на ArtistsDAO
 	 * @return возвращает DTO
 	 */
-	ArtistsDTO getTransferObj (IArtistsDAO dao);
+	ArtistsDTO getTransferObj ();
 
 }

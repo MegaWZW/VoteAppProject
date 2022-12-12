@@ -2,7 +2,7 @@ package com.course.app.dao.factories;
 
 import com.course.app.dao.VotesDAO;
 import com.course.app.dao.api.IVotesDAO;
-import com.course.app.services.Vote;
+import com.course.app.core.Vote;
 
 import java.util.ArrayList;
 import java.util.List;

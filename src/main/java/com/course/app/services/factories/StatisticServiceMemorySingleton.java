@@ -1,5 +1,7 @@
 package com.course.app.services.factories;
 
+import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
+import com.course.app.dao.factories.GenresDAOMemorySingleton;
 import com.course.app.services.StatisticService;
 import com.course.app.services.api.IStatisticService;
 
@@ -12,7 +14,9 @@ public class StatisticServiceMemorySingleton {
 		if(instance == null) {
 			synchronized (StatisticServiceMemorySingleton.class) {
 				if (instance == null) {
-					instance = new StatisticService(VoteServiceMemorySingleton.getInstance());
+					instance = new StatisticService(VoteServiceMemorySingleton.getInstance(),
+							ArtistsDAOMemorySingleton.getInstance(),
+							GenresDAOMemorySingleton.getInstance());
 				}
 			}
 		}

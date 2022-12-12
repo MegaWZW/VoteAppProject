@@ -1,13 +1,14 @@
 package com.course.app.dao;
 
+import com.course.app.core.Genre;
 import com.course.app.dao.api.IGenresDAO;
 
 import java.util.List;
 
 public class GenresDAO implements IGenresDAO {
-	private List<String> genres;
+	private List<Genre> genres;
 
-	public GenresDAO(List<String> genres) {
+	public GenresDAO(List<Genre> genres) {
 		this.genres = genres;
 	}
 
@@ -16,26 +17,26 @@ public class GenresDAO implements IGenresDAO {
 	 * @return
 	 */
 	@Override
-	public List<String> getData() {
+	public List<Genre> getData() {
 		return genres;
 	}
 
 	/**
 	 * Добавляет музыкальный жанр в список для голосования
-	 * @param genreName наименование жанра, который нужно добавить
+	 * @param genre наименование жанра, который нужно добавить
 	 */
 	@Override
-	public void addPosition(String genreName) {
-		genres.add(genreName);
+	public void addPosition(Genre genre) {
+		genres.add(genre);
 	}
 
 	/**
 	 * Удаляет музыкальный жанр из списка для голосования
-	 * @param genreName наименование жанра, который нужно удалить
+	 * @param genre наименование жанра, который нужно удалить
 	 */
 	@Override
-	public void deletePosition(String genreName) {
-		genres.remove(genreName);
+	public void deletePosition(Genre genre) {
+		genres.remove(genre);
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.course.app.dao.factories;
 
+import com.course.app.core.Genre;
 import com.course.app.dao.GenresDAO;
 import com.course.app.dao.api.IGenresDAO;
 
@@ -12,17 +13,18 @@ import java.util.List;
  */
 public class GenresDAOMemorySingleton {
 	private volatile static IGenresDAO instance;
-	private static List<String> genres = Arrays.asList(
-			"Pop",
-			"Hip hop",
-			"Rock",
-			"Rhythm and blues",
-			"Soul",
-			"Reggae",
-			"Country",
-			"Funk",
-			"Folk",
-			"Jazz");
+	private static List<Genre> genres = Arrays.asList(
+			new Genre("Pop", 0, 21),
+			new Genre("Hip hop", 0, 22),
+			new Genre("Rock", 0, 23),
+			new Genre("Rhythm and blues", 0, 24),
+			new Genre("Soul", 0, 25),
+			new Genre("Reggae", 0, 26),
+			new Genre("Country", 0, 27),
+			new Genre("Funk", 0, 28),
+			new Genre("Folk", 0, 29),
+			new Genre("Jazz", 0, 31)
+			);
 
 	private GenresDAOMemorySingleton(){};
 

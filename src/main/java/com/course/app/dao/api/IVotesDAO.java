@@ -1,6 +1,6 @@
 package com.course.app.dao.api;
 
-import com.course.app.services.Vote;
+import com.course.app.core.Vote;
 
 import java.util.List;
 

@@ -1,15 +1,17 @@
 package com.course.app.dto;
 
+import com.course.app.core.Artist;
+
 import java.util.List;
 
 public class ArtistsDTO {
-	private List<String> artists;
+	private List<String> artistNames;
 
 	public ArtistsDTO (List<String> artists) {
-		this.artists = artists;
+		this.artistNames = artists;
 	}
 
 	public List<String> getArtists() {
-		return artists;
+		return artistNames;
 	}
 }

@@ -1,5 +1,7 @@
 package com.course.app.dao.api;
 
+import com.course.app.core.Artist;
+
 import java.util.List;
 
 
@@ -8,17 +10,17 @@ public interface IArtistsDAO {
 	 * метод для получения списка, хранящегося внутри DAO
 	 * @return список строк
 	 */
-	List<String> getData();
+	List<Artist> getData();
 
 	/**
 	 * Добавляет исполнителя в DAO
-	 * @param artistName имя исполнителя, которого нужно добавить
+	 * @param artist исполнитель, которого нужно добавить
 	 */
-	void addPosition(String artistName);
+	public void addPosition(Artist artist);
 
 	/**
 	 * Удаляет исполнителя из DAO
-	 * @param artistName имя исполнителя, которого необходимо удалить
+	 * @param artist исполнитель, которого необходимо удалить
 	 */
-	void deletePosition(String artistName);
+	public void deletePosition(Artist artist);
 }

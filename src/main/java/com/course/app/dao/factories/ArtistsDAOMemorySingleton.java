@@ -1,5 +1,6 @@
 package com.course.app.dao.factories;
 
+import com.course.app.core.Artist;
 import com.course.app.dao.ArtistsDAO;
 import com.course.app.dao.api.IArtistsDAO;
 
@@ -12,11 +13,12 @@ import java.util.List;
  */
 public class ArtistsDAOMemorySingleton {
 	private volatile static IArtistsDAO instance;
-	private static List<String> artists = Arrays.asList(
-			"Adele",
-			"Billie Eilish",
-			"Taylor Swift",
-			"Ed Sheeran");
+	private static List<Artist> artists = Arrays.asList(
+			new Artist("Adele", 0, 11),
+			 new Artist("Billie Eilish", 0, 12),
+			new Artist("Taylor Swift", 0, 13),
+			new Artist("Ed Sheeran", 0, 14)
+			);
 
 
 	private ArtistsDAOMemorySingleton(){};

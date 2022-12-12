@@ -1,4 +1,4 @@
-package com.course.app.services;
+package com.course.app.core;
 
 import com.course.app.dto.VoteDTO;
 
@@ -15,15 +15,14 @@ import java.util.Objects;
 public class Vote {
 	private String artist;
 	private String[] genres;
-	private String message;
-	private String acceptanceTime;
+	private Message message;
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public Vote (VoteDTO dto) {
 		this.artist = dto.getArtists()[0];
 		this.genres = dto.getGenres();
-		this.message = dto.getText();
-		this.acceptanceTime = LocalDateTime.now().format(formatter);
+		this.message = new Message(dto.getText(), LocalDateTime.now().format(formatter));
+
 	}
 
 	public String getArtist() {
@@ -34,27 +33,8 @@ public class Vote {
 		return genres;
 	}
 
-	public String getMessage() {
+	public Message getMessage() {
 		return message;
 	}
 
-	public String getAcceptanceTime() {
-		return acceptanceTime;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Vote vote = (Vote) o;
-		return Objects.equals(artist, vote.artist) && Arrays.equals(genres, vote.genres)
-				&& Objects.equals(message, vote.message) && Objects.equals(acceptanceTime, vote.acceptanceTime);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = Objects.hash(artist, message, acceptanceTime);
-		result = 31 * result + Arrays.hashCode(genres);
-		return result;
-	}
 }

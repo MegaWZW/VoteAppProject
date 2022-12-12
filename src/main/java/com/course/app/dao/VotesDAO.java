@@ -1,7 +1,7 @@
 package com.course.app.dao;
 
 import com.course.app.dao.api.IVotesDAO;
-import com.course.app.services.Vote;
+import com.course.app.core.Vote;
 
 import java.util.List;
 

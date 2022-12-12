@@ -3,9 +3,9 @@ package com.course.app.services.api;
 
 import com.course.app.dao.api.IVotesDAO;
 import com.course.app.dto.VoteDTO;
-import com.course.app.services.Result;
-import com.course.app.services.SortedResult;
-import com.course.app.services.Vote;
+import com.course.app.core.Result;
+import com.course.app.core.SortedResult;
+import com.course.app.core.Vote;
 
 public interface IVoteService {
 	/**
@@ -26,6 +26,6 @@ public interface IVoteService {
 	 * @param result объект, хранящий результат подсчёта голосов
 	 * @return объект, содержащий отсортированные данные
 	 */
-	SortedResult sort(Result result);
+	void sort(Result result);
 	IVotesDAO getDao();
 }

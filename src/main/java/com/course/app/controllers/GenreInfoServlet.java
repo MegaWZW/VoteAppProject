@@ -2,6 +2,8 @@ package com.course.app.controllers;
 
 import com.course.app.dao.factories.GenresDAOMemorySingleton;
 import com.course.app.dto.GenresDTO;
+import com.course.app.services.api.IGenreService;
+import com.course.app.services.factories.GenreServiceMemorySingleton;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +18,12 @@ import java.io.PrintWriter;
  */
 @WebServlet(name="GenreInfoServlet", urlPatterns = "/genres")
 public class GenreInfoServlet extends HttpServlet {
+    private final IGenreService genreService;
+
+    public GenreInfoServlet() {
+        this.genreService = GenreServiceMemorySingleton.getInstance();
+    }
+
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws ServletException, IOException {
 
@@ -23,7 +31,7 @@ public class GenreInfoServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         PrintWriter writer = response.getWriter();
 
-        GenresDTO dto = new GenresDTO(GenresDAOMemorySingleton.getInstance().getData());
+        GenresDTO dto = genreService.getTransferObj();
 
         writer.write("<p><span style='color: blue;'>List of genres(choose from 3 to 5):</span></p>");
 

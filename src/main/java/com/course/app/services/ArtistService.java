@@ -1,8 +1,12 @@
 package com.course.app.services;
 
+import com.course.app.core.Artist;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dto.ArtistsDTO;
 import com.course.app.services.api.IArtistService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArtistService implements IArtistService {
 
@@ -18,8 +22,14 @@ public class ArtistService implements IArtistService {
 	 * @return DTO
 	 */
 	@Override
-	public ArtistsDTO getTransferObj(IArtistsDAO dao) {
-		return new ArtistsDTO(dao.getData());
+	public ArtistsDTO getTransferObj() {
+		List<String> artistNames = new ArrayList<>();
+		List<Artist> artists = dao.getData();
+
+		for(Artist art : artists) {
+			artistNames.add(art.getName());
+		}
+		return new ArtistsDTO(artistNames);
 	}
 
 }

@@ -1,7 +1,8 @@
 package com.course.app.controllers;
 
-import com.course.app.services.Result;
-import com.course.app.services.SortedResult;
+import com.course.app.core.*;
+import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
+import com.course.app.dao.factories.GenresDAOMemorySingleton;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 import com.course.app.services.factories.StatisticServiceMemorySingleton;
@@ -35,28 +36,36 @@ public class ResultPrinterServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 
+		for(Artist art : ArtistsDAOMemorySingleton.getInstance().getData()){
+			art.setPoints(0);
+		}
+
+		for(Genre gen : GenresDAOMemorySingleton.getInstance().getData()){
+			gen.setPoints(0);
+		}
 		//подсчёт результатов голосования и создание объекта Result
 		Result res = stat.calculate();
 		//сортировка результатов голосования
-		SortedResult sortRes = service.sort(res);
-
+		service.sort(res);
 
 		/*
 		print result
 		 */
-		for(Map.Entry<String, Integer> artist : sortRes.getArtistsMap().entrySet()) {
-			out.write("<p>" + artist.getKey() + " ---------- " + artist.getValue() + " points</p>");
+		for(Artist artist : res.getArtists()) {
+			out.write("<p>" + artist.getName() + " ---------- " + artist.getPoints() + " points</p>");
+
 		}
 		out.write("<p>*****************************</p>");
 
-		for(Map.Entry<String, Integer> genre : sortRes.getGenresMap().entrySet()) {
-			out.write("<p>" + genre.getKey() + " ---------- " + genre.getValue() + " points</p>");
+		for(Genre genre : res.getGenres()) {
+			out.write("<p>" + genre.getName() + " ---------- " + genre.getPoints() + " points</p>");
+
 		}
 		out.write("<p>*****************************</p>");
 
 
-		for(Map.Entry<String, String> genre : sortRes.getMessageMap().entrySet()) {
-			out.write("<p>" + genre.getKey() + ": " + genre.getValue());
+		for(Message message : res.getMessages()) {
+			out.write("<p>" + message.getTime() + ": " + message.getText());
 		}
 	}
 }

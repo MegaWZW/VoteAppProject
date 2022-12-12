@@ -1,5 +1,6 @@
 package com.course.app.services;
 
+import com.course.app.core.*;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.api.IVotesDAO;
@@ -70,50 +71,10 @@ public class VoteService implements IVoteService {
 	 * @return объект, хранящий результат подсчёта голосов в отсортированном виде
 	 */
 	@Override
-	public SortedResult sort(Result result) {
-		Map<String, Integer> artistMap = result.getArtistsMap();
-
-		List<Map.Entry<String, Integer>> artistList = new ArrayList<>(artistMap.entrySet());
-		Collections.sort(artistList, new Comparator<Map.Entry<String, Integer>>() {
-			@Override
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return o2.getValue() - o1.getValue();
-			}
-		});
-		Map<String, Integer> sortedArtistMap = new HashMap<>();
-		for (Map.Entry<String, Integer> entry : artistList){
-			sortedArtistMap.put(entry.getKey(), entry.getValue());
-		}
-
-		Map<String, Integer> genreMap = result.getGenresMap();
-
-		List<Map.Entry<String, Integer>> genreList = new ArrayList<>(genreMap.entrySet());
-		Collections.sort(genreList, new Comparator<Map.Entry<String, Integer>>() {
-			@Override
-			public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-				return o2.getValue() - o1.getValue();
-			}
-		});
-
-		Map<String, Integer> sortedGenreMap = new HashMap<>();
-		for (Map.Entry<String, Integer> entry : genreList){
-			sortedGenreMap.put(entry.getKey(), entry.getValue());
-		}
-
-		Map<String, String> textMap = result.getMessageMap();
-
-		List<String> listDate = new ArrayList<>();
-		for (String dt : textMap.keySet()) {
-			listDate.add(dt);
-		}
-		Collections.sort(listDate);
-
-		Map<String, String> sortedTextMap = new HashMap<>();
-		for (String dt : listDate){
-			sortedTextMap.put(dt, textMap.get(dt));
-		}
-
-		return new SortedResult(sortedArtistMap,sortedGenreMap, sortedTextMap);
+	public void sort(Result result) {
+		Collections.sort(result.getArtists());
+		Collections.sort(result.getGenres());
+		Collections.sort(result.getMessages());
 	}
 
 	public IVotesDAO getDao() {
@@ -143,8 +104,14 @@ public class VoteService implements IVoteService {
 	 */
 	private static boolean hasProperArtist (String[] artists) {
 		IArtistsDAO dao = ArtistsDAOMemorySingleton.getInstance();
+
+		List<String> namesList = new ArrayList<>();
+		for(Artist art : dao.getData()) {
+			namesList.add(art.getName());
+		}
+
 		for (int i = 0; i < artists.length; i++) {
-			if (!dao.getData().contains(artists[i])){
+			if (!namesList.contains(artists[i])){
 				return false;
 			}
 		}
@@ -159,8 +126,13 @@ public class VoteService implements IVoteService {
 	 */
 	private static boolean hasProperGenres (String[] genres) {
 		IGenresDAO dao = GenresDAOMemorySingleton.getInstance();
+		List<String> namesList = new ArrayList<>();
+		for(Genre gen : dao.getData()) {
+			namesList.add(gen.getName());
+		}
+
 		for (int i = 0; i < genres.length; i++) {
-			if (!dao.getData().contains(genres[i])){
+			if (!namesList.contains(genres[i])){
 				return false;
 			}
 		}

@@ -1,5 +1,6 @@
 package com.course.app.services;
 
+import com.course.app.core.*;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
@@ -8,6 +9,7 @@ import com.course.app.dao.factories.VotesDAOMemorySingleton;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +20,13 @@ import java.util.Map;
 public class StatisticService implements IStatisticService {
 
 	private IVoteService voteService;
+	private IArtistsDAO artistDao;
+	private IGenresDAO genreDao;
 
-	public StatisticService(IVoteService voteService){
+	public StatisticService(IVoteService voteService, IArtistsDAO artistDao, IGenresDAO genreDao) {
 		this.voteService = voteService;
+		this.artistDao = artistDao;
+		this.genreDao = genreDao;
 	}
 
 	/**
@@ -29,46 +35,30 @@ public class StatisticService implements IStatisticService {
 	 */
 	@Override
 	public Result calculate(){
-		/*
-		Создание 3-ёх Мар для хранения результатов голосования
-		 */
-		Map<String, Integer> artistsMap = new HashMap<>();
-		Map<String, Integer> genresMap = new HashMap<>();
-		Map<String, String> messageMap = new HashMap<>();
+		List<Vote> votes = voteService.getDao().getData();
+		List<Artist> artists = artistDao.getData();
+		List<Genre> genres = genreDao.getData();
+		List<Message> messages = new ArrayList<>();
 
-		//получение объектов, хранящих имена исполнителей и музыкальные жанры
-		IArtistsDAO artDao = ArtistsDAOMemorySingleton.getInstance();
-		IGenresDAO genresDAO = GenresDAOMemorySingleton.getInstance();
-
-		/*
-		заполнение Мар исполнителей, ключ - имя исполнителя, значение 0 - по умолчанию
-		 */
-		for(String artist : artDao.getData()) {
-			artistsMap.put(artist, 0);
-		}
-
-		/*
-		заполнение Мар муз. жанров, ключ - название жанра, значение 0 - по умолчанию
-		 */
-		for(String genre : genresDAO.getData()) {
-			genresMap.put(genre, 0);
-		}
-
-		//получение списка объектов типа Голос
-		List<Vote> votesList = VotesDAOMemorySingleton.getInstance().getData();
-
-		/**
-		 * Итерация по списку Голосов, извлечение информации, заполенение результатов голосования
-		 */
-		for(Vote vote : votesList) {
-			incrementValue(artistsMap, vote.getArtist());
-			for(String genre : vote.getGenres()){
-				incrementValue(genresMap, genre);
+		for(Vote vote : votes) {
+			for (Artist artist : artists) {
+				if (vote.getArtist().equals(artist.getName())) {
+					artist.incrementPoints();
+				}
 			}
-			messageMap.put(vote.getAcceptanceTime(), vote.getMessage());
-		}
 
-		return new Result(artistsMap, genresMap, messageMap);
+			String[] gens = vote.getGenres();
+			for(String gen : gens) {
+				for(Genre genre : genres) {
+					if (gen.equals(genre.getName())){
+						genre.incrementPoints();
+					}
+				}
+			}
+
+			messages.add(vote.getMessage());
+		}
+		return new Result(artists, genres, messages);
 	}
 
 	private static void incrementValue (Map<String, Integer> map, String key) {
