@@ -1,7 +1,7 @@
 package com.course.app.dao.factories;
 
 import com.course.app.core.Artist;
-import com.course.app.dao.ArtistsDAO;
+import com.course.app.dao.ArtistsMemoryDAO;
 import com.course.app.dao.api.IArtistsDAO;
 
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class ArtistsDAOMemorySingleton {
 		if(instance == null) {
 			synchronized (ArtistsDAOMemorySingleton.class) {
 				if (instance == null) {
-					instance = new ArtistsDAO(artists);
+					instance = new ArtistsMemoryDAO(artists);
 				}
 			}
 		}

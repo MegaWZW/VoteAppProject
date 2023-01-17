@@ -1,6 +1,6 @@
 package com.course.app.dao.factories;
 
-import com.course.app.dao.VotesDAO;
+import com.course.app.dao.VotesMemoryDAO;
 import com.course.app.dao.api.IVotesDAO;
 import com.course.app.core.Vote;
 
@@ -21,7 +21,7 @@ public class VotesDAOMemorySingleton {
 		if (instance == null) {
 			synchronized (VotesDAOMemorySingleton.class) {
 				if (instance == null) {
-					instance = new VotesDAO(votes);
+					instance = new VotesMemoryDAO(votes);
 				}
 			}
 		}

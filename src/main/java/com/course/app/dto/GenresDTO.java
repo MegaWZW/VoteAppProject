@@ -1,7 +1,5 @@
 package com.course.app.dto;
 
-import com.course.app.core.Genre;
-
 import java.util.List;
 
 public class GenresDTO {

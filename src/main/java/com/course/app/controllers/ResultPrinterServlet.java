@@ -1,8 +1,9 @@
 package com.course.app.controllers;
 
-import com.course.app.core.*;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
-import com.course.app.dao.factories.GenresDAOMemorySingleton;
+import com.course.app.core.Artist;
+import com.course.app.core.Genre;
+import com.course.app.core.Message;
+import com.course.app.core.Result;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 import com.course.app.services.factories.StatisticServiceMemorySingleton;
@@ -15,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
 
 /**
  * Сервлет для вывода результатов голосования
@@ -36,13 +36,7 @@ public class ResultPrinterServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 
-		for(Artist art : ArtistsDAOMemorySingleton.getInstance().getData()){
-			art.setPoints(0);
-		}
 
-		for(Genre gen : GenresDAOMemorySingleton.getInstance().getData()){
-			gen.setPoints(0);
-		}
 		//подсчёт результатов голосования и создание объекта Result
 		Result res = stat.calculate();
 		//сортировка результатов голосования

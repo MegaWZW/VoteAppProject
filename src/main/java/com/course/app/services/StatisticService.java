@@ -5,12 +5,10 @@ import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
 import com.course.app.dao.factories.GenresDAOMemorySingleton;
-import com.course.app.dao.factories.VotesDAOMemorySingleton;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +33,14 @@ public class StatisticService implements IStatisticService {
 	 */
 	@Override
 	public Result calculate(){
+		for(Artist art : ArtistsDAOMemorySingleton.getInstance().getData()){
+			art.setPoints(0);
+		}
+
+		for(Genre gen : GenresDAOMemorySingleton.getInstance().getData()){
+			gen.setPoints(0);
+		}
+
 		List<Vote> votes = voteService.getDao().getData();
 		List<Artist> artists = artistDao.getData();
 		List<Genre> genres = genreDao.getData();

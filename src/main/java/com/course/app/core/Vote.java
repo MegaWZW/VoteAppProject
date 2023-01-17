@@ -4,8 +4,6 @@ import com.course.app.dto.VoteDTO;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Класс объектов типа Голос

@@ -1,6 +1,5 @@
 package com.course.app.controllers;
 
-import com.course.app.dao.factories.GenresDAOMemorySingleton;
 import com.course.app.dto.GenresDTO;
 import com.course.app.services.api.IGenreService;
 import com.course.app.services.factories.GenreServiceMemorySingleton;

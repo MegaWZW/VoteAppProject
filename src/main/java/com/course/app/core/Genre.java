@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Genre implements Comparable<Genre>{
 	private String name;
-	private int points;
-	private int id;
+	private long points;
+	private long id;
 
-	public Genre(String name, int points, int id) {
+	public Genre(String name, long points, long id) {
 		this.name = name;
 		this.points = points;
 		this.id = id;
@@ -21,7 +21,7 @@ public class Genre implements Comparable<Genre>{
 		this.name = name;
 	}
 
-	public int getPoints() {
+	public long getPoints() {
 		return points;
 	}
 
@@ -29,7 +29,7 @@ public class Genre implements Comparable<Genre>{
 		this.points = points;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -39,7 +39,7 @@ public class Genre implements Comparable<Genre>{
 
 	@Override
 	public int compareTo(Genre o) {
-		return o.getPoints() - this.points;
+		return 0;
 	}
 
 	public void incrementPoints(){

@@ -5,10 +5,10 @@ import com.course.app.core.Vote;
 
 import java.util.List;
 
-public class VotesDAO implements IVotesDAO {
+public class VotesMemoryDAO implements IVotesDAO {
 	private List<Vote> votes;
 
-	public VotesDAO(List<Vote> votes) {
+	public VotesMemoryDAO(List<Vote> votes) {
 		this.votes = votes;
 	}
 

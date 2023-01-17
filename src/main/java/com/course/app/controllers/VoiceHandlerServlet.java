@@ -1,6 +1,5 @@
 package com.course.app.controllers;
 
-import com.course.app.core.Result;
 import com.course.app.dto.VoteDTO;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;

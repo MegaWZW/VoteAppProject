@@ -1,7 +1,7 @@
 package com.course.app.dao.factories;
 
 import com.course.app.core.Genre;
-import com.course.app.dao.GenresDAO;
+import com.course.app.dao.GenresMemoryDAO;
 import com.course.app.dao.api.IGenresDAO;
 
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class GenresDAOMemorySingleton {
 		if(instance == null) {
 			synchronized (GenresDAOMemorySingleton.class) {
 				if(instance == null){
-					instance = new GenresDAO(genres);
+					instance = new GenresMemoryDAO(genres);
 				}
 			}
 		}

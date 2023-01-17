@@ -5,10 +5,10 @@ import com.course.app.dao.api.IGenresDAO;
 
 import java.util.List;
 
-public class GenresDAO implements IGenresDAO {
+public class GenresMemoryDAO implements IGenresDAO {
 	private List<Genre> genres;
 
-	public GenresDAO(List<Genre> genres) {
+	public GenresMemoryDAO(List<Genre> genres) {
 		this.genres = genres;
 	}
 
@@ -28,6 +28,11 @@ public class GenresDAO implements IGenresDAO {
 	@Override
 	public void addPosition(Genre genre) {
 		genres.add(genre);
+	}
+
+	@Override
+	public void update() {
+
 	}
 
 	/**

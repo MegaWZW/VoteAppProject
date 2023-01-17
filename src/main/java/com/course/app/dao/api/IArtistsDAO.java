@@ -16,11 +16,15 @@ public interface IArtistsDAO {
 	 * Добавляет исполнителя в DAO
 	 * @param artist исполнитель, которого нужно добавить
 	 */
-	public void addPosition(Artist artist);
+	void addPosition(Artist artist);
 
 	/**
 	 * Удаляет исполнителя из DAO
 	 * @param artist исполнитель, которого необходимо удалить
 	 */
-	public void deletePosition(Artist artist);
+	void deletePosition(Artist artist);
+
+	void update(Artist artist);
+
+	Artist getArtist(String name_artist);
 }

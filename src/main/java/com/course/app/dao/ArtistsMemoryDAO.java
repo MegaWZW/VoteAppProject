@@ -5,10 +5,20 @@ import com.course.app.dao.api.IArtistsDAO;
 
 import java.util.List;
 
-public class ArtistsDAO implements IArtistsDAO {
+public class ArtistsMemoryDAO implements IArtistsDAO {
 	private List<Artist> artists;
 
-	public ArtistsDAO(List<Artist> artists) {
+	@Override
+	public void update(Artist artist) {
+
+	}
+
+	@Override
+	public Artist getArtist(String name_artist) {
+		return null;
+	}
+
+	public ArtistsMemoryDAO(List<Artist> artists) {
 		this.artists = artists;
 	}
 
