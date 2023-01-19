@@ -4,14 +4,27 @@ import java.util.Objects;
 
 public class Artist implements Comparable<Artist>{
 	private String name;
-	private int points;
-	private int id;
+	private long points;
+	private long id;
 
-	public Artist(String name, int points, int id) {
+	public Artist(String name, long points, long id) {
 		this.name = name;
 		this.points = points;
 		this.id = id;
 	}
+
+	public Artist(String name, long id){
+		this.name = name;
+		this.id = id;
+		this.points = 0;
+	}
+
+	public Artist(String name) {
+		this.name = name;
+		this.points = 0;
+		this.id = 0;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -20,7 +33,7 @@ public class Artist implements Comparable<Artist>{
 		this.name = name;
 	}
 
-	public int getPoints() {
+	public long getPoints() {
 		return points;
 	}
 
@@ -28,7 +41,7 @@ public class Artist implements Comparable<Artist>{
 		this.points = points;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -40,10 +53,9 @@ public class Artist implements Comparable<Artist>{
 		this.points++;
 	}
 
-
 	@Override
 	public int compareTo(Artist o) {
-		return  o.getPoints() - this.points;
+		return 0;
 	}
 
 	@Override

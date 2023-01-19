@@ -1,8 +1,5 @@
 package com.course.app.controllers;
 
-import com.course.app.dao.ArtistsDAO;
-import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
 import com.course.app.dto.ArtistsDTO;
 import com.course.app.services.api.IArtistService;
 import com.course.app.services.factories.ArtistServiceMemorySingleton;

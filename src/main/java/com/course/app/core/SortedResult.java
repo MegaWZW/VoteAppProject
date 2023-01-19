@@ -2,9 +2,6 @@ package com.course.app.core;
 
 import java.util.Map;
 
-/**
- * Класс для объектов, содержащих информацию о результатх голосования в отсортированном виде
- */
 public class SortedResult {
 	private Map<String, Integer> artistsMap;
 	private Map<String, Integer> genresMap;

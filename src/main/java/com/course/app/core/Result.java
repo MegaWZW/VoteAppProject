@@ -1,12 +1,7 @@
 package com.course.app.core;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- * Класс для объектов, содержащих информацию о результатах голосования
- * Результаты храняться в HashMap'ах
- */
 public class Result {
 	private List<Artist> artists;
 	private List<Genre> genres;

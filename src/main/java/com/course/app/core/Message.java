@@ -1,10 +1,12 @@
 package com.course.app.core;
 
+import java.time.LocalDateTime;
+
 public class Message implements Comparable<Message>{
 	private String text;
-	private String time;
+	private LocalDateTime time;
 
-	public Message(String text, String time) {
+	public Message(String text, LocalDateTime time) {
 		this.text = text;
 		this.time = time;
 	}
@@ -17,11 +19,11 @@ public class Message implements Comparable<Message>{
 		this.text = text;
 	}
 
-	public String getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
 
-	public void setTime(String time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 

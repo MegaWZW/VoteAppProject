@@ -19,22 +19,12 @@ public class VoteService implements IVoteService {
 		this.dao = dao;
 	}
 
-	/**
-	 * Попытка сохранения DTO
-	 * @param dto объект DTO
-	 */
 	@Override
 	public void save(VoteDTO dto) {
 		Vote vote = this.validate(dto);
 		dao.save(vote);
 	}
 
-	/**
-	 * Валидация полученного голоса
-	 * @param dto объект DTO
-	 * @return объект типа Голос
-	 * @throws IllegalArgumentException в случае неверно переданых параметров
-	 */
 	@Override
 	public Vote validate(VoteDTO dto) throws IllegalArgumentException {
 
@@ -65,11 +55,6 @@ public class VoteService implements IVoteService {
 		return new Vote(dto);
 	}
 
-	/**
-	 * Сортировка результатов голосования
-	 * @param result объект, хранящий результат подсчёта голосов
-	 * @return объект, хранящий результат подсчёта голосов в отсортированном виде
-	 */
 	@Override
 	public void sort(Result result) {
 		Collections.sort(result.getArtists());
@@ -81,11 +66,6 @@ public class VoteService implements IVoteService {
 		return dao;
 	}
 
-	/**
-	 * Проверка, содержит ли массив строк поаторяющиеся элементы
-	 * @param toCheck массив строк, переданный дял проверки
-	 * @return
-	 */
 	private static boolean hasRepeatedElements (String[] toCheck) {
 		Arrays.sort(toCheck);
 		for (int i = 0; i < toCheck.length - 1; i++) {
@@ -96,17 +76,11 @@ public class VoteService implements IVoteService {
 		return false;
 	}
 
-	/**
-	 * Метод, осуществляющий проверку соответствия переданных исполнителей в качестве параметров
-	 * списку исполнителей, доступных для выбора на голосовании
-	 * @param artists массив переданных имён артистов
-	 * @return true - если исполнители соответствуют списку, false - не соответствуют
-	 */
 	private static boolean hasProperArtist (String[] artists) {
 		IArtistsDAO dao = ArtistsDAOMemorySingleton.getInstance();
 
 		List<String> namesList = new ArrayList<>();
-		for(Artist art : dao.getData()) {
+		for(Artist art : dao.getAll()) {
 			namesList.add(art.getName());
 		}
 
@@ -118,16 +92,10 @@ public class VoteService implements IVoteService {
 		return true;
 	}
 
-	/**
-	 * Метод, осуществляющий проверку соответствия переданных муз.жанров в качестве параметров
-	 * списку жанров, доступных для выбора на голосовании
-	 * @param genres массив переданных муз.жанров
-	 * @return true - если муз.жанры соответствуют списку, false - не соответствуют
-	 */
 	private static boolean hasProperGenres (String[] genres) {
 		IGenresDAO dao = GenresDAOMemorySingleton.getInstance();
 		List<String> namesList = new ArrayList<>();
-		for(Genre gen : dao.getData()) {
+		for(Genre gen : dao.getAll()) {
 			namesList.add(gen.getName());
 		}
 

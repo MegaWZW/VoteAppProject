@@ -5,18 +5,14 @@ import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
 import com.course.app.dao.factories.GenresDAOMemorySingleton;
-import com.course.app.dao.factories.VotesDAOMemorySingleton;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Класс, предназначенны для подсчёта статистики
- */
+
 public class StatisticService implements IStatisticService {
 
 	private IVoteService voteService;
@@ -29,15 +25,19 @@ public class StatisticService implements IStatisticService {
 		this.genreDao = genreDao;
 	}
 
-	/**
-	 * Метод, подсчитывающий резултаты гоолосования
-	 * @return объект, содержащий результаты голосования
-	 */
 	@Override
 	public Result calculate(){
-		List<Vote> votes = voteService.getDao().getData();
-		List<Artist> artists = artistDao.getData();
-		List<Genre> genres = genreDao.getData();
+		for(Artist art : ArtistsDAOMemorySingleton.getInstance().getAll()){
+			art.setPoints(0);
+		}
+
+		for(Genre gen : GenresDAOMemorySingleton.getInstance().getAll()){
+			gen.setPoints(0);
+		}
+
+		List<Vote> votes = voteService.getDao().getAll();
+		List<Artist> artists = artistDao.getAll();
+		List<Genre> genres = genreDao.getAll();
 		List<Message> messages = new ArrayList<>();
 
 		for(Vote vote : votes) {

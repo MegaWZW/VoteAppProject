@@ -15,15 +15,10 @@ public class GenreService implements IGenreService {
 		this.dao = dao;
 	}
 
-	/**
-	 * метод для получения Genres DTO
-	 * @param dao ссылка на GenresDAO
-	 * @return DTO
-	 */
 	@Override
 	public GenresDTO getTransferObj() {
 		List<String> genreNames = new ArrayList<>();
-		List<Genre> genres = dao.getData();
+		List<Genre> genres = dao.getAll();
 
 		for(Genre gen : genres){
 			genreNames.add(gen.getName());

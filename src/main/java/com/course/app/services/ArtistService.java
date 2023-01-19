@@ -16,15 +16,10 @@ public class ArtistService implements IArtistService {
 		this.dao = dao;
 	}
 
-	/**
-	 * метод для получения Artists DTO
-	 * @param dao ссылка на ArtistsDAO
-	 * @return DTO
-	 */
 	@Override
 	public ArtistsDTO getTransferObj() {
 		List<String> artistNames = new ArrayList<>();
-		List<Artist> artists = dao.getData();
+		List<Artist> artists = dao.getAll();
 
 		for(Artist art : artists) {
 			artistNames.add(art.getName());
