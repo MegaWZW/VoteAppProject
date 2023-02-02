@@ -3,8 +3,8 @@ package com.course.app.services;
 import com.course.app.core.*;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
-import com.course.app.dao.factories.GenresDAOMemorySingleton;
+import com.course.app.dao.memory.factroies.ArtistsMemoryDAOSingleton;
+import com.course.app.dao.memory.factroies.GenresMemoryDAOSingleton;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 
@@ -27,11 +27,11 @@ public class StatisticService implements IStatisticService {
 
 	@Override
 	public Result calculate(){
-		for(Artist art : ArtistsDAOMemorySingleton.getInstance().getAll()){
+		for(Artist art : ArtistsMemoryDAOSingleton.getInstance().getAll()){
 			art.setPoints(0);
 		}
 
-		for(Genre gen : GenresDAOMemorySingleton.getInstance().getAll()){
+		for(Genre gen : GenresMemoryDAOSingleton.getInstance().getAll()){
 			gen.setPoints(0);
 		}
 

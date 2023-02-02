@@ -4,9 +4,10 @@ import com.course.app.core.*;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.api.IVotesDAO;
-import com.course.app.dao.factories.ArtistsDAOMemorySingleton;
-import com.course.app.dao.factories.GenresDAOMemorySingleton;
+import com.course.app.dao.memory.factroies.ArtistsMemoryDAOSingleton;
+import com.course.app.dao.memory.factroies.GenresMemoryDAOSingleton;
 import com.course.app.dto.VoteDTO;
+import com.course.app.services.api.INotificationService;
 import com.course.app.services.api.IVoteService;
 
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 public class VoteService implements IVoteService {
 
 	private final IVotesDAO dao;
+	private final INotificationService notificationService = null;
 
 	public VoteService (IVotesDAO dao) {
 		this.dao = dao;
@@ -23,6 +25,7 @@ public class VoteService implements IVoteService {
 	public void save(VoteDTO dto) {
 		Vote vote = this.validate(dto);
 		dao.save(vote);
+		notificationService.send("message info");
 	}
 
 	@Override
@@ -77,7 +80,7 @@ public class VoteService implements IVoteService {
 	}
 
 	private static boolean hasProperArtist (String[] artists) {
-		IArtistsDAO dao = ArtistsDAOMemorySingleton.getInstance();
+		IArtistsDAO dao = ArtistsMemoryDAOSingleton.getInstance();
 
 		List<String> namesList = new ArrayList<>();
 		for(Artist art : dao.getAll()) {
@@ -93,7 +96,7 @@ public class VoteService implements IVoteService {
 	}
 
 	private static boolean hasProperGenres (String[] genres) {
-		IGenresDAO dao = GenresDAOMemorySingleton.getInstance();
+		IGenresDAO dao = GenresMemoryDAOSingleton.getInstance();
 		List<String> namesList = new ArrayList<>();
 		for(Genre gen : dao.getAll()) {
 			namesList.add(gen.getName());

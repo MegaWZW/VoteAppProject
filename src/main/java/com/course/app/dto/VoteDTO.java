@@ -1,21 +1,23 @@
 package com.course.app.dto;
 
+import java.util.List;
+
 public class VoteDTO {
-	private String[] artists;
-	private String[] genres;
+	private String artist;
+	private List<String> genres;
 	private String text;
 
-	public VoteDTO(String[] artists, String[] genres, String text){
-		this.artists = artists;
+	public VoteDTO(String artist, List<String> genres, String text){
+		this.artist = artist;
 		this.genres = genres;
 		this.text = text;
 	}
 
-	public String[] getArtists() {
-		return artists;
+	public String getArtist() {
+		return artist;
 	}
 
-	public String[] getGenres() {
+	public List<String> getGenres() {
 		return genres;
 	}
 
