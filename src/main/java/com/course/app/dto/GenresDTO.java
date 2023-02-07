@@ -1,15 +1,24 @@
 package com.course.app.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GenresDTO {
-	private List<String> genreNames;
+	private List<GenreDTO> genres;
 
-	public GenresDTO (List<String> genres) {
-		this.genreNames = genres;
+	public GenresDTO(List<GenreDTO> genres) {
+		this.genres = genres;
 	}
 
-	public List<String> getGenres() {
-		return genreNames;
+	public GenresDTO() {
+		genres = new ArrayList<>();
+	}
+
+	public List<GenreDTO> getAll() {
+		return genres;
+	}
+
+	public void add (GenreDTO genre) {
+		genres.add(genre);
 	}
 }

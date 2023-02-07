@@ -1,5 +1,6 @@
 package com.course.app.web.controllers;
 
+import com.course.app.dto.GenreDTO;
 import com.course.app.dto.GenresDTO;
 import com.course.app.services.api.IGenreService;
 import com.course.app.services.factories.GenreServiceSingleton;
@@ -34,8 +35,8 @@ public class GenreInfoServlet extends HttpServlet {
 
         writer.write("<p><span style='color: blue;'>List of genres(choose from 3 to 5):</span></p>");
 
-        for (String genre : dto.getGenres()) {
-            writer.write("<p><span style='color: blue;'>" + genre + "</span></p>");
+        for (GenreDTO genre : dto.getAll()) {
+            writer.write("<p><span style='color: blue;'>" + genre.getName() + "</span></p>");
         }
         writer.write("<p></p>");
 

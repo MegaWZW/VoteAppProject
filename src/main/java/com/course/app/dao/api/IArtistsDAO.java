@@ -1,15 +1,15 @@
 package com.course.app.dao.api;
 
-import com.course.app.core.Artist;
+import com.course.app.dto.ArtistDTO;
 
 import java.util.List;
 
 
 public interface IArtistsDAO {
-	List<Artist> getAll();
-	Artist getOne(String name_artist);
-	void addPosition(Artist artist);
-	void deletePosition(Artist artist);
-	void updatePosition(Artist toDelete, Artist toAdd);
+	List<ArtistDTO> getAll();
+	ArtistDTO getOne(String name_artist);
+	void addPosition(ArtistDTO artist);
+	void deletePosition(ArtistDTO artist);
+	void updatePosition(String toDelete, String toAdd);
 	boolean isExist(String name);
 }

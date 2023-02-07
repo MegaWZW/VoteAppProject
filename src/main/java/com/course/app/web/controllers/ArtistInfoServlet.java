@@ -1,5 +1,6 @@
 package com.course.app.web.controllers;
 
+import com.course.app.dto.ArtistDTO;
 import com.course.app.dto.ArtistsDTO;
 import com.course.app.services.api.IArtistService;
 import com.course.app.services.factories.ArtistServiceSingleton;
@@ -36,8 +37,8 @@ public class ArtistInfoServlet extends HttpServlet {
 
         writer.write("<p><span style='color: green;'>List of artists(choose one):</span></p>");
 
-        for (String artist : dto.getArtists()){
-            writer.write("<p><span style='color: green;'>" + artist + "</span></p>");
+        for (ArtistDTO artist : dto.getAll()){
+            writer.write("<p><span style='color: green;'>" + artist.getName() + "</span></p>");
         }
 
         writer.write("<p></p>");

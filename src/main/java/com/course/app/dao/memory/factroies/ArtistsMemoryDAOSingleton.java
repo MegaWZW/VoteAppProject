@@ -1,8 +1,9 @@
 package com.course.app.dao.memory.factroies;
 
-import com.course.app.core.Artist;
-import com.course.app.dao.memory.ArtistsMemoryDAO;
 import com.course.app.dao.api.IArtistsDAO;
+import com.course.app.dao.db.entity.Artist;
+import com.course.app.dao.memory.ArtistsMemoryDAO;
+import com.course.app.dto.ArtistDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,11 +11,11 @@ import java.util.List;
 public class ArtistsMemoryDAOSingleton {
 	private volatile static IArtistsDAO instance;
 
-	private static List<Artist> artists = Arrays.asList(
-			new Artist("Adele", 0, 1),
-			 new Artist("Billie Eilish", 0, 2),
-			new Artist("Taylor Swift", 0, 3),
-			new Artist("Ed Sheeran", 0, 4)
+	private static List<ArtistDTO> artists = Arrays.asList(
+			new ArtistDTO(1L, "Adele"),
+			 new ArtistDTO(2L, "Billie Eilish"),
+			new ArtistDTO(3L,"Taylor Swift"),
+			new ArtistDTO(4L, "Ed Sheeran")
 			);
 
 

@@ -1,6 +1,7 @@
 package com.course.app.services.factories;
 
 import com.course.app.dao.provider.ChoiceDaoProvider;
+import com.course.app.dao.provider.api.IDaoProvider;
 import com.course.app.services.VoteService;
 import com.course.app.services.api.IVoteService;
 
@@ -13,7 +14,9 @@ public class VoteServiceSingleton {
 		if(instance == null) {
 			synchronized (VoteServiceSingleton.class) {
 				if (instance == null) {
-					instance = new VoteService(ChoiceDaoProvider.getInstance().votesDao());
+					IDaoProvider daoProvider = ChoiceDaoProvider.getInstance();
+					instance = new VoteService(daoProvider.votesDao(),
+					daoProvider.artistsDao(), daoProvider.genresDao());
 				}
 			}
 		}

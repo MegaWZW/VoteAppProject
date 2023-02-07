@@ -1,16 +1,16 @@
 package com.course.app.services.api;
 
 
-import com.course.app.core.Result;
-import com.course.app.core.Vote;
-import com.course.app.dao.api.IVotesDAO;
+import com.course.app.dao.api.IArtistsDAO;
+import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dto.VoteDTO;
+
+import java.util.List;
 
 public interface IVoteService {
 	void save(VoteDTO dto);
-
-	Vote validate(VoteDTO dto);
-
-	void sort(Result result);
-	IVotesDAO getDao();
+	void validate(VoteDTO dto);
+	List<VoteDTO> getAllVotes();
+	IArtistsDAO getArtistsDAO();
+	IGenresDAO getGenresDAO();
 }

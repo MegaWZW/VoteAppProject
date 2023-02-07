@@ -10,7 +10,7 @@ import java.util.Properties;
 
 public class DataSourceC3P0 implements IDataSourceWrapper {
 
-	private static final String DRIVER_CLASS_PROPERTY_NAME = "db.c3p0.class";
+	private static final String DRIVER_CLASS_PROPERTY_NAME = "db.class";
 	private static final String URL_PROPERTY_NAME = "db.url";
 	private static final String USER_PROPERTY_NAME = "db.user";
 	private static final String PASSWORD_PROPERTY_NAME = "db.password";

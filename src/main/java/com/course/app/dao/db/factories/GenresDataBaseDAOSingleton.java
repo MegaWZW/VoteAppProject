@@ -6,15 +6,15 @@ import com.course.app.dao.db.ds.factories.DataSourceC3p0Singleton;
 
 import java.beans.PropertyVetoException;
 
-public class GenreDataBaseDAOSingleton {
+public class GenresDataBaseDAOSingleton {
 
 	private volatile static IGenresDAO instance;
 
-	private GenreDataBaseDAOSingleton(){};
+	private GenresDataBaseDAOSingleton(){};
 
 	public static IGenresDAO getInstance() throws PropertyVetoException {
 		if(instance == null) {
-			synchronized (GenreDataBaseDAOSingleton.class) {
+			synchronized (GenresDataBaseDAOSingleton.class) {
 				if (instance == null) {
 					instance = new GenreDataBaseDAO(DataSourceC3p0Singleton.getInstance());
 				}

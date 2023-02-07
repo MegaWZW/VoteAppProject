@@ -1,5 +1,7 @@
 package com.course.app.web.controllers;
 
+import com.course.app.dto.ArtistDTO;
+import com.course.app.dto.GenreDTO;
 import com.course.app.dto.VoteDTO;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
@@ -13,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Сервлет для обработки голосов
@@ -24,10 +28,10 @@ public class VoiceHandlerServlet extends HttpServlet {
 	private static final String PARAMETER_GENRE = "genre";
 	private static final String TEXT = "text";
 
-	private final IVoteService service;
+	private final IVoteService voteService;
 
 	public VoiceHandlerServlet(){
-		this.service = VoteServiceSingleton.getInstance();
+		this.voteService = VoteServiceSingleton.getInstance();
 	}
 
 	protected void doPost (HttpServletRequest request,
@@ -35,17 +39,24 @@ public class VoiceHandlerServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
 
-		String[] artists = request.getParameterValues(PARAMETER_ARTIST);
+		String artist = request.getParameter(PARAMETER_ARTIST);
 		String[] genres = request.getParameterValues(PARAMETER_GENRE);
 		String text = request.getParameter(TEXT);
 
+		ArtistDTO artistDTO = voteService.getArtistsDAO().getOne(artist);
+		Set<GenreDTO> setGenresDTO = new HashSet<>();
+		for(String genre : genres) {
+			GenreDTO genreDTO = voteService.getGenresDAO().getOne(genre);
+			setGenresDTO.add(genreDTO);
+		}
+
 		PrintWriter out = response.getWriter();
 
-		VoteDTO dto = new VoteDTO(artists, genres, text);
+		VoteDTO dto = new VoteDTO(artistDTO, setGenresDTO, text);
 
 
 		try {
-			service.save(dto);
+			voteService.save(dto);
 			out.write("<p><span style='color: green;'>Ваш голос засчитан!</span></p>");
 		} catch (IllegalArgumentException e) {
 			out.write(e.getMessage());

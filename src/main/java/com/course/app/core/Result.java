@@ -1,24 +1,25 @@
 package com.course.app.core;
 
 import java.util.List;
+import java.util.Map;
 
 public class Result {
-	private List<Artist> artists;
-	private List<Genre> genres;
-	private List<Message> messages;
+	private final Map<String, Integer> artistsMap;
+	private final Map<String, Integer> genresMap;
+	private final List<Message> messages;
 
-	public Result(List<Artist> artists, List<Genre> genres, List<Message> messages) {
-		this.artists = artists;
-		this.genres = genres;
+	public Result(Map<String, Integer> artistsMap, Map<String, Integer> genresMap, List<Message> messages) {
+		this.artistsMap = artistsMap;
+		this.genresMap = genresMap;
 		this.messages = messages;
 	}
 
-	public List<Artist> getArtists() {
-		return artists;
+	public Map<String, Integer> getArtistsMap() {
+		return artistsMap;
 	}
 
-	public List<Genre> getGenres() {
-		return genres;
+	public Map<String, Integer> getGenresMap() {
+		return genresMap;
 	}
 
 	public List<Message> getMessages() {

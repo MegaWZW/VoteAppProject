@@ -1,15 +1,25 @@
 package com.course.app.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistsDTO {
-	private List<String> artistNames;
+	private List<ArtistDTO> artists;
 
-	public ArtistsDTO (List<String> artists) {
-		this.artistNames = artists;
+	public ArtistsDTO (List<ArtistDTO> artists) {
+		this.artists = artists;
 	}
 
-	public List<String> getArtists() {
-		return artistNames;
+	public ArtistsDTO () {
+		artists = new ArrayList<>();
 	}
+
+	public List<ArtistDTO> getAll() {
+		return artists;
+	}
+
+	public void add(ArtistDTO artist) {
+		artists.add(artist);
+	}
+
 }

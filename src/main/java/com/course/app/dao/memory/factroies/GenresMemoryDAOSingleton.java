@@ -1,8 +1,8 @@
 package com.course.app.dao.memory.factroies;
 
-import com.course.app.core.Genre;
-import com.course.app.dao.memory.GenresMemoryDAO;
 import com.course.app.dao.api.IGenresDAO;
+import com.course.app.dao.memory.GenresMemoryDAO;
+import com.course.app.dto.GenreDTO;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,17 +10,17 @@ import java.util.List;
 public class GenresMemoryDAOSingleton {
 	private volatile static IGenresDAO instance;
 
-	private static List<Genre> genres = Arrays.asList(
-			new Genre("Pop", 0, 1),
-			new Genre("Hip hop", 0, 2),
-			new Genre("Rock", 0, 3),
-			new Genre("Rhythm and blues", 0, 4),
-			new Genre("Soul", 0, 5),
-			new Genre("Reggae", 0, 6),
-			new Genre("Country", 0, 7),
-			new Genre("Funk", 0, 8),
-			new Genre("Folk", 0, 9),
-			new Genre("Jazz", 0, 10)
+	private static List<GenreDTO> genres = Arrays.asList(
+			new GenreDTO(1L, "Pop"),
+			new GenreDTO(2L, "Hip hop"),
+			new GenreDTO(3L, "Rock"),
+			new GenreDTO(4L, "Rhythm and blues"),
+			new GenreDTO(5L, "Soul"),
+			new GenreDTO(6L, "Reggae"),
+			new GenreDTO(7L, "Country"),
+			new GenreDTO(8L, "Funk"),
+			new GenreDTO(9L, "Folk"),
+			new GenreDTO(10L, "Jazz")
 			);
 
 	private GenresMemoryDAOSingleton(){};
