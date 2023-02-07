@@ -1,13 +1,24 @@
-package com.course.app.dao.db.entity;
+package com.course.app.dao.db.orm.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "vote")
 public class Vote implements Serializable {
+	@Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
 	private Long id;
+
+	@ManyToOne
 	private Artist artist;
+	@ManyToMany
 	private List<Genre> genres;
 	private LocalDateTime dtCreate;
 	private String about;

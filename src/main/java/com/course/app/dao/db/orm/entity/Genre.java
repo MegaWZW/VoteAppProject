@@ -1,10 +1,20 @@
-package com.course.app.dao.db.entity;
+package com.course.app.dao.db.orm.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity
+@Table(name = "app.genre")
 public class Genre implements Serializable {
+	@Id
+	@GeneratedValue(generator="increment")
+	@GenericGenerator(name="increment", strategy = "increment")
 	private Long id;
+
+	@Column(name = "name")
 	private String name;
 
 	public Genre(Long id, String name) {

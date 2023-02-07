@@ -1,7 +1,7 @@
 package com.course.app.dao.memory.factroies;
 
 import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.db.entity.Artist;
+import com.course.app.dao.db.orm.entity.Artist;
 import com.course.app.dao.memory.ArtistsMemoryDAO;
 import com.course.app.dto.ArtistDTO;
 

@@ -1,6 +1,5 @@
 package com.course.app.dao.db;
 
-import com.course.app.dao.db.entity.Artist;
 import com.course.app.dao.api.IArtistsDAO;
 import com.course.app.dao.db.ds.api.IDataSourceWrapper;
 import com.course.app.dto.ArtistDTO;

@@ -2,18 +2,20 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
-    <persistence-unit name="tutorial">
+    <persistence-unit name="voteapp">
         <description>
-            Persistence unit for the JPA tutorial of the Hibernate Getting Started Guide
+
         </description>
 
-        <class>org.example.entity.Event</class>
+        <class>com.course.app.dao.db.orm.entity.Artist</class>
+        <class>com.course.app.dao.db.orm.entity.Genre</class>
+        <class>com.course.app.dao.db.orm.entity.Vote</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/VoteApp" />
             <property name="javax.persistence.jdbc.user" value="postgres" />
-            <property name="javax.persistence.jdbc.password" value="arsenal1577980" />
+            <property name="javax.persistence.jdbc.password" value="DPht*3Vl$QW9Y40$5H3BLoxuQ" />
 
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.hbm2ddl.auto" value="none" />
