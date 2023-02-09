@@ -1,5 +1,7 @@
 package com.course.app.dto;
 
+import com.course.app.dao.db.orm.entity.Genre;
+
 import java.util.Objects;
 
 public class GenreDTO {
@@ -9,6 +11,16 @@ public class GenreDTO {
 	public GenreDTO(Long id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public GenreDTO(String name){
+		this.id = 0L;
+		this.name = name;
+	}
+
+	public GenreDTO(Genre genreEntity) {
+		this.id = genreEntity.getId();
+		this.name = genreEntity.getName();
 	}
 
 	public Long getId() {
@@ -38,5 +50,13 @@ public class GenreDTO {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, name);
+	}
+
+	@Override
+	public String toString() {
+		return "GenreDTO{" +
+				"id=" + id +
+				", name='" + name + '\'' +
+				'}';
 	}
 }

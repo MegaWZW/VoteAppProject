@@ -2,8 +2,9 @@ package com.course.app.services;
 
 import com.course.app.core.Message;
 import com.course.app.core.Result;
-import com.course.app.dto.GenreDTO;
-import com.course.app.dto.VoteDTO;
+import com.course.app.dto.*;
+import com.course.app.services.api.IArtistService;
+import com.course.app.services.api.IGenreService;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
 
@@ -13,9 +14,13 @@ import java.util.*;
 public class StatisticService implements IStatisticService {
 
 	private IVoteService voteService;
+	private IArtistService artistService;
+	private IGenreService genreService;
 
-	public StatisticService(IVoteService voteService) {
+	public StatisticService(IVoteService voteService, IArtistService artistService, IGenreService genreService) {
 		this.voteService = voteService;
+		this.artistService = artistService;
+		this.genreService = genreService;
 	}
 
 	@Override
@@ -23,6 +28,16 @@ public class StatisticService implements IStatisticService {
 		Map<String, Integer> artistsMap = new HashMap<>();
 		Map<String, Integer> genresMap = new HashMap<>();
 		List<Message> messagesList= new ArrayList<>();
+
+		ArtistsDTO artsDTO = artistService.getTransferObj();
+		for(ArtistDTO artist : artsDTO.getAll()) {
+			artistsMap.put(artist.getName(), 0);
+		}
+
+		GenresDTO gensDTO = genreService.getTransferObj();
+		for(GenreDTO genre : gensDTO.getAll()) {
+			genresMap.put(genre.getName(), 0);
+		}
 
 		List<VoteDTO> votes = voteService.getAllVotes();
 

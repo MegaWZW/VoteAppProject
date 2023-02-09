@@ -1,15 +1,18 @@
 package com.course.app.dao.db.orm.entity;
 
+import com.course.app.dto.GenreDTO;
+import com.course.app.dto.VoteDTO;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "vote")
+@Table(name = "app.vote")
 public class Vote implements Serializable {
 	@Id
 	@GeneratedValue(generator="increment")
@@ -17,18 +20,35 @@ public class Vote implements Serializable {
 	private Long id;
 
 	@ManyToOne
+	@JoinTable(name = "app.vote_artist",
+			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
 	private Artist artist;
-	@ManyToMany
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "app.vote_genre",
+			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
+			inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))
 	private List<Genre> genres;
+
 	private LocalDateTime dtCreate;
 	private String about;
 
-	public Vote(Long id, Artist artist, List<Genre> genres, LocalDateTime dtCreate, String about) {
-		this.id = id;
+	public Vote(Artist artist, List<Genre> genres, LocalDateTime dtCreate, String about) {
 		this.artist = artist;
 		this.genres = genres;
 		this.dtCreate = dtCreate;
 		this.about = about;
+	}
+
+	public Vote (VoteDTO voteDTO) {
+		this.artist = new Artist(voteDTO.getArtist());
+		this.genres = new ArrayList<>();
+		for(GenreDTO item : voteDTO.getGenres()){
+			this.genres.add(new Genre(item));
+		}
+		this.dtCreate = LocalDateTime.now();
+		this.about = voteDTO.getAbout();
 	}
 
 	public Vote() {
@@ -39,9 +59,6 @@ public class Vote implements Serializable {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public Artist getArtist() {
 		return artist;

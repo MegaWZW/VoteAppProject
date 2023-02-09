@@ -1,8 +1,8 @@
 package com.course.app.dao.db.factories;
 
-import com.course.app.dao.db.GenreDataBaseDAO;
 import com.course.app.dao.api.IGenresDAO;
-import com.course.app.dao.db.ds.factories.DataSourceC3p0Singleton;
+import com.course.app.dao.db.GenreDataBaseDAO;
+import com.course.app.dao.db.orm.hibernate.factories.EntityManagerFactorySingleton;
 
 import java.beans.PropertyVetoException;
 
@@ -16,7 +16,7 @@ public class GenresDataBaseDAOSingleton {
 		if(instance == null) {
 			synchronized (GenresDataBaseDAOSingleton.class) {
 				if (instance == null) {
-					instance = new GenreDataBaseDAO(DataSourceC3p0Singleton.getInstance());
+					instance = new GenreDataBaseDAO(EntityManagerFactorySingleton.getInstance());
 				}
 			}
 		}

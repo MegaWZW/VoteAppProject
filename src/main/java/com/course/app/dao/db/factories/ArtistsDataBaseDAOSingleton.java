@@ -1,8 +1,8 @@
 package com.course.app.dao.db.factories;
 
-import com.course.app.dao.db.ArtistsDataBaseDAO;
 import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.db.ds.factories.DataSourceC3p0Singleton;
+import com.course.app.dao.db.ArtistsDataBaseDAO;
+import com.course.app.dao.db.orm.hibernate.factories.EntityManagerFactorySingleton;
 
 import java.beans.PropertyVetoException;
 
@@ -16,7 +16,7 @@ public class ArtistsDataBaseDAOSingleton {
 		if(instance == null) {
 			synchronized (ArtistsDataBaseDAOSingleton.class) {
 				if (instance == null) {
-					instance = new ArtistsDataBaseDAO(DataSourceC3p0Singleton.getInstance());
+					instance = new ArtistsDataBaseDAO(EntityManagerFactorySingleton.getInstance());
 				}
 			}
 		}

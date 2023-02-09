@@ -1,6 +1,10 @@
 package com.course.app.dto;
 
+import com.course.app.dao.db.orm.entity.Genre;
+import com.course.app.dao.db.orm.entity.Vote;
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 public class VoteDTO {
@@ -32,6 +36,17 @@ public class VoteDTO {
 		this.genres = genres;
 		this.dtCreate = LocalDateTime.now();
 		this.about = about;
+	}
+
+	public VoteDTO(Vote voteEntity) {
+		this.id = voteEntity.getId();
+		this.artist = new ArtistDTO(voteEntity.getArtist());
+		this.genres = new HashSet<>();
+		for(Genre genre : voteEntity.getGenres()) {
+			this.genres.add(new GenreDTO(genre));
+		}
+		this.dtCreate = voteEntity.getDtCreate();
+		this.about = voteEntity.getAbout();
 	}
 
 	public ArtistDTO getArtist() {

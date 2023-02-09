@@ -53,6 +53,11 @@ public class ResultPrinterServlet extends HttpServlet {
 			out.write("<p>" + key + " ---------- " + genresMap.get(key) + " points</p>");
 		}
 
+		out.write("<p>*****************************</p>");
+		out.write("<br><br>");
+		out.write("<h2>Messages:</h2>");out.write("<br>");
+
+
 		for(Message message : messagesList) {
 			out.write("<p>" + message.getTime() + ": " + message.getText());
 		}

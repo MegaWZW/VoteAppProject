@@ -1,60 +1,46 @@
 package com.course.app.dao.db;
 
 import com.course.app.dao.api.IGenresDAO;
-import com.course.app.dao.db.ds.api.IDataSourceWrapper;
+import com.course.app.dao.db.orm.entity.Genre;
 import com.course.app.dto.GenreDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class GenreDataBaseDAO implements IGenresDAO {
 
-	private final IDataSourceWrapper dataSource;
+	private final EntityManagerFactory factory;
 
-	private final static String GET_ALL_ROWS = "SELECT id, name  " +
-			                                   "FROM app.genre;" ;
-
-	private final static String GET_ONE_ROW = "SELECT id, name " +
-			                                  "FROM app.genre " +
-			                                  "WHERE name LIKE ?;" ;
-
-	private final static String  INSERT_ROW_INTO_TABLE = "INSERT INTO app.genre (name) " +
-			                                             "VALUES (?);" ;
-
-	private final static String DELETE_ROW_FROM_TABLE = "DELETE FROM app.genre " +
-			                                            "WHERE name LIKE ?;" ;
-
-	private final static String UPDATE_ROW = "UPDATE app.genre " +
-			                                 "SET name = ? " +
-			                                 "WHERE name LIKE ?;" ;
-
-	public GenreDataBaseDAO(IDataSourceWrapper wrapper){
-		this.dataSource = wrapper;
+	public GenreDataBaseDAO(EntityManagerFactory factory){
+		this.factory = factory;
 	}
 
 	@Override
 	public List<GenreDTO> getAll() {
 		List<GenreDTO> list = new ArrayList<>();
-		try(Connection connection = this.dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(GET_ALL_ROWS);
-		    ResultSet resSet = stmt.executeQuery();){
-			while (resSet.next()){
-				String name = resSet.getString("name");
-				long id = resSet.getLong("id");
-				list.add(new GenreDTO(id, name));
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
+			Root<Genre> genreRoot = cq.from(Genre.class);
+			CriteriaQuery<Genre> allGenres = cq.select(genreRoot);
+			TypedQuery<Genre> allQuery = em.createQuery(allGenres);
+			List<Genre> genreEntities = allQuery.getResultList();
+
+			for(Genre entity : genreEntities) {
+				list.add(new GenreDTO(entity));
 			}
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		}catch(Exception e) {
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 		return list;
 	}
@@ -62,79 +48,53 @@ public class GenreDataBaseDAO implements IGenresDAO {
 	@Override
 	public GenreDTO getOne(String name_genre) {
 		if(!isExist(name_genre)){
-			throw new NoSuchElementException("Такого жанра нет в голосовании");
+			throw new NoSuchElementException("Такой артист не принимает участие в голосовании");
 		}
-		GenreDTO genre = null;
 
-		try(Connection connection = this.dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(GET_ONE_ROW);){
-
-			stmt.setString(1, name_genre);
-			try(ResultSet resSet = stmt.executeQuery()){
-				while (resSet.next()){
-					genre = new GenreDTO(resSet.getLong("id"), resSet.getString("name"));
-				}
-			}catch (SQLException e){
-				try {
-					dataSource.close();
-				} catch (Exception ex) {
-					throw new RuntimeException("Проблема с закрытием соединения");
-				}
-				throw new RuntimeException(e);
+		List<GenreDTO> listGenres = getAll();
+		for(GenreDTO item : listGenres) {
+			if(item.getName().equals(name_genre)){
+				return item;
 			}
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
-			throw new RuntimeException(e);
 		}
-		return genre;
+		return null;
 	}
 
 	@Override
 	public void addPosition(GenreDTO genre) {
 		if(isExist(genre.getName())){
-			throw new IllegalArgumentException("Такой жанр уже участвует в голосовании");
+			throw new IllegalArgumentException("Жанр с таким названием уже участвует в голосовании");
 		}
-
-		try(Connection connection = this.dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(INSERT_ROW_INTO_TABLE)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, genre.getName());
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		Genre entity = new Genre(genre);
+		EntityManager em = factory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.persist(entity);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 
 	@Override
 	public void deletePosition(GenreDTO genre) {
-		try(Connection connection = this.dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(DELETE_ROW_FROM_TABLE)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, genre.getName());
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		if(!isExist(genre.getName())){
+			throw new NoSuchElementException("Жанра, который Вы хотите удалить, не в БД");
+		}
+		EntityManager em = factory.createEntityManager();
+		Genre entity = em.find(Genre.class, genre.getId());
+		try{
+			em.getTransaction().begin();
+			em.remove(entity);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 
@@ -143,23 +103,34 @@ public class GenreDataBaseDAO implements IGenresDAO {
 		if(!isExist(toDelete)){
 			throw new NoSuchElementException("Изменяемого жанра не существует");
 		}
+		EntityManager em = factory.createEntityManager();
+		List<Genre> list = null;
+		Genre toUpdate = null;
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
+			Root<Genre> genreRoot = cq.from(Genre.class);
+			CriteriaQuery<Genre> allGenres = cq.select(genreRoot);
+			TypedQuery<Genre> allQuery = em.createQuery(allGenres);
+			list = allQuery.getResultList();
 
-		try(Connection connection = this.dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(UPDATE_ROW)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, toAdd);
-			stmt.setString(2, toDelete);
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
+			for (Genre entity : list) {
+				if (entity.getName().equals(toDelete)) {
+					toUpdate = entity;
+					break;
+				}
 			}
+			if (toUpdate != null) {
+				toUpdate.setName(toAdd);
+			}
+			em.getTransaction().begin();
+			em.merge(toUpdate);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 

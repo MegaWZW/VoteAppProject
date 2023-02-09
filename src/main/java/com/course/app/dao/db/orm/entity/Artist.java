@@ -1,5 +1,6 @@
 package com.course.app.dao.db.orm.entity;
 
+import com.course.app.dto.ArtistDTO;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -17,9 +18,12 @@ public class Artist implements Serializable {
 	@Column(name = "name")
 	private String name;
 
-	public Artist(Long id, String name) {
-		this.id = id;
+	public Artist(String name) {
 		this.name = name;
+	}
+
+	public Artist(ArtistDTO dto) {
+		this.name = dto.getName();
 	}
 
 	public Artist(){
@@ -30,9 +34,6 @@ public class Artist implements Serializable {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;

@@ -2,7 +2,7 @@ package com.course.app.dao.db.factories;
 
 import com.course.app.dao.api.IVotesDAO;
 import com.course.app.dao.db.VotesDataBaseDAO;
-import com.course.app.dao.db.ds.factories.DataSourceC3p0Singleton;
+import com.course.app.dao.db.orm.hibernate.factories.EntityManagerFactorySingleton;
 
 import java.beans.PropertyVetoException;
 
@@ -16,7 +16,7 @@ public class VotesDataBaseDAOSingleton {
 		if(instance == null) {
 			synchronized (VotesDataBaseDAOSingleton.class) {
 				if (instance == null) {
-					instance = new VotesDataBaseDAO(DataSourceC3p0Singleton.getInstance());
+					instance = new VotesDataBaseDAO(EntityManagerFactorySingleton.getInstance());
 				}
 			}
 		}

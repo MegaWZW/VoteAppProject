@@ -1,60 +1,46 @@
 package com.course.app.dao.db;
 
 import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.db.ds.api.IDataSourceWrapper;
+import com.course.app.dao.db.orm.entity.Artist;
 import com.course.app.dto.ArtistDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 public class ArtistsDataBaseDAO implements IArtistsDAO {
 
-	private IDataSourceWrapper dataSource;
+	private final EntityManagerFactory factory;
 
-	private final static String GET_ALL_ROWS = "SELECT id, name " +
-			                                   "FROM app.artist;" ;
-
-	private final static String GET_ONE_ROW = "SELECT id, name " +
-			                                  "FROM app.artist " +
-			                                  "WHERE name LIKE ?;" ;
-
-	private final static String  INSERT_ROW_INTO_TABLE = "INSERT INTO app.artist (name) " +
-			                                             "VALUES (?);" ;
-
-	private final static String DELETE_ROW_FROM_TABLE = "DELETE FROM app.artist " +
-			                                            "WHERE name LIKE ?;" ;
-
-	private final static String UPDATE_ROW = "UPDATE app.artist " +
-			                                 "SET name = ? " +
-			                                 "WHERE name LIKE ?;" ;
-
-	public ArtistsDataBaseDAO(IDataSourceWrapper wrapper){
-		 this.dataSource = wrapper;
+	public ArtistsDataBaseDAO(EntityManagerFactory factory){
+		 this.factory = factory;
 	}
 
 	@Override
 	public List<ArtistDTO> getAll() {
 		List<ArtistDTO> list = new ArrayList<>();
-		try(Connection connection = dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(GET_ALL_ROWS);
-		    ResultSet resSet = stmt.executeQuery();){
-			while (resSet.next()){
-				String name = resSet.getString("name");
-				long id = resSet.getLong("id");
-				list.add(new ArtistDTO(id, name));
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
+			Root<Artist> artistRoot = cq.from(Artist.class);
+			CriteriaQuery<Artist> allArtists = cq.select(artistRoot);
+			TypedQuery<Artist> allQuery = em.createQuery(allArtists);
+			List<Artist> artistEntities = allQuery.getResultList();
+
+			for(Artist entity : artistEntities) {
+				list.add(new ArtistDTO(entity));
 			}
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		}catch(Exception e) {
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 		return list;
 	}
@@ -64,29 +50,14 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 		if(!isExist(name_artist)){
 			throw new NoSuchElementException("Такой артист не принимает участие в голосовании");
 		}
-		ArtistDTO artist = null;
 
-		try(Connection connection = dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(GET_ONE_ROW);){
-
-			stmt.setString(1, name_artist);
-			try(ResultSet resSet = stmt.executeQuery()){
-				while (resSet.next()){
-					artist = new ArtistDTO(resSet.getLong("id"), resSet.getString("name"));
-				}
-			}catch (SQLException e){
-				try {
-					dataSource.close();
-				} catch (Exception ex) {
-					throw new RuntimeException("Проблема с закрытием соединения");
-				}
-				throw new RuntimeException(e);
+		List<ArtistDTO> listArtist = getAll();
+		for(ArtistDTO item : listArtist) {
+			if(item.getName().equals(name_artist)){
+				return item;
 			}
-
-		}catch (SQLException e){
-			throw new RuntimeException(e);
 		}
-		return artist;
+		return null;
 	}
 
 	@Override
@@ -94,42 +65,36 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 		if(isExist(artist.getName())){
 			throw new IllegalArgumentException("Артист с таким именем уже участвует в голосовании");
 		}
-
-		try(Connection connection = dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(INSERT_ROW_INTO_TABLE)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, artist.getName());
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		Artist entity = new Artist(artist);
+		EntityManager em = factory.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			em.persist(entity);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 
 	@Override
 	public void deletePosition(ArtistDTO artist) {
-		try(Connection connection = dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(DELETE_ROW_FROM_TABLE)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, artist.getName());
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
-			}
+		if(!isExist(artist.getName())){
+			throw new NoSuchElementException("Артиста, которого Вы хотите удалить, не в БД");
+		}
+		EntityManager em = factory.createEntityManager();
+		Artist entity = em.find(Artist.class, artist.getId());
+		try{
+			em.getTransaction().begin();
+			em.remove(entity);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 
@@ -138,23 +103,34 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 		if(!isExist(toDelete)){
 			throw new NoSuchElementException("Изменяемого артиста не существует");
 		}
+		EntityManager em = factory.createEntityManager();
+		List<Artist> list = null;
+		Artist toUpdate = null;
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
+			Root<Artist> artistRoot = cq.from(Artist.class);
+			CriteriaQuery<Artist> allArtists = cq.select(artistRoot);
+			TypedQuery<Artist> allQuery = em.createQuery(allArtists);
+			list = allQuery.getResultList();
 
-		try(Connection connection = dataSource.getConnection();
-		    PreparedStatement stmt = connection.prepareStatement(UPDATE_ROW)) {
-
-			connection.setAutoCommit(false);
-			stmt.setString(1, toAdd);
-			stmt.setString(2, toDelete);
-			stmt.executeUpdate();
-			connection.commit();
-
-		}catch (SQLException e){
-			try {
-				dataSource.close();
-			} catch (Exception ex) {
-				throw new RuntimeException("Проблема с закрытием соединения");
+			for (Artist entity : list) {
+				if (entity.getName().equals(toDelete)) {
+					toUpdate = entity;
+					break;
+				}
 			}
+			if (toUpdate != null) {
+				toUpdate.setName(toAdd);
+			}
+			em.getTransaction().begin();
+			em.merge(toUpdate);
+			em.getTransaction().commit();
+		}catch (Exception e) {
+			em.getTransaction().rollback();
 			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
 	}
 
