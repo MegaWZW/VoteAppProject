@@ -1,12 +1,18 @@
 package com.course.app.web.controllers;
 
+import com.course.app.dao.db.orm.entity.Genre;
 import com.course.app.dto.ArtistDTO;
 import com.course.app.dto.GenreDTO;
 import com.course.app.dto.VoteDTO;
+import com.course.app.services.api.IArtistService;
+import com.course.app.services.api.IGenreService;
 import com.course.app.services.api.IStatisticService;
 import com.course.app.services.api.IVoteService;
+import com.course.app.services.factories.ArtistServiceSingleton;
+import com.course.app.services.factories.GenreServiceSingleton;
 import com.course.app.services.factories.StatisticServiceSingleton;
 import com.course.app.services.factories.VoteServiceSingleton;
+import com.course.app.web.util.RequestParameterHandler;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,14 +30,14 @@ import java.util.Set;
 @WebServlet(name = "VoiceHandlerServlet", urlPatterns = "/vote")
 public class VoiceHandlerServlet extends HttpServlet {
 
-	private static final String PARAMETER_ARTIST = "artist";
-	private static final String PARAMETER_GENRE = "genre";
-	private static final String TEXT = "text";
-
 	private final IVoteService voteService;
+	private final IArtistService artistService;
+	private final IGenreService genreService;
 
 	public VoiceHandlerServlet(){
 		this.voteService = VoteServiceSingleton.getInstance();
+		this.artistService = ArtistServiceSingleton.getInstance();
+		this.genreService = GenreServiceSingleton.getInstance();
 	}
 
 	protected void doPost (HttpServletRequest request,
@@ -39,14 +45,17 @@ public class VoiceHandlerServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=utf-8");
 
-		String artist = request.getParameter(PARAMETER_ARTIST);
-		String[] genres = request.getParameterValues(PARAMETER_GENRE);
-		String text = request.getParameter(TEXT);
+		String artistId = request.getParameter(RequestParameterHandler.ARTIST_ID_PARAM);
+		String[] genresId = request.getParameterValues(RequestParameterHandler.GENRE_ID_PARAM);
+		String text = request.getParameter(RequestParameterHandler.TEXT_PARAM);
 
-		ArtistDTO artistDTO = voteService.getArtistsDAO().getOne(artist);
+		ArtistDTO artistDTO = new ArtistDTO(RequestParameterHandler.convertIdToLong(artistId),
+				artistService.getOne(RequestParameterHandler.convertIdToLong(artistId)).getName());
+
 		Set<GenreDTO> setGenresDTO = new HashSet<>();
-		for(String genre : genres) {
-			GenreDTO genreDTO = voteService.getGenresDAO().getOne(genre);
+		for(String id : genresId) {
+			GenreDTO genreDTO = new GenreDTO(RequestParameterHandler.convertIdToLong(id),
+					genreService.getOne(RequestParameterHandler.convertIdToLong(id)).getName());
 			setGenresDTO.add(genreDTO);
 		}
 
@@ -54,15 +63,7 @@ public class VoiceHandlerServlet extends HttpServlet {
 
 		VoteDTO dto = new VoteDTO(artistDTO, setGenresDTO, text);
 
-
-		try {
-			voteService.save(dto);
-			out.write("<p><span style='color: green;'>Ваш голос засчитан!</span></p>");
-		} catch (IllegalArgumentException e) {
-			out.write(e.getMessage());
-		}
-
-		IStatisticService stat = StatisticServiceSingleton.getInstance();
-		stat.calculate();
+		voteService.save(dto);
+		out.write("<p><span style='color: green;'>Ваш голос засчитан!</span></p>");
 	}
 }

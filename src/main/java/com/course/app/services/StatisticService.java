@@ -29,13 +29,13 @@ public class StatisticService implements IStatisticService {
 		Map<String, Integer> genresMap = new HashMap<>();
 		List<Message> messagesList= new ArrayList<>();
 
-		ArtistsDTO artsDTO = artistService.getTransferObj();
-		for(ArtistDTO artist : artsDTO.getAll()) {
+		List<ArtistDTO> listArtist = artistService.getAll();
+		for(ArtistDTO artist : listArtist) {
 			artistsMap.put(artist.getName(), 0);
 		}
 
-		GenresDTO gensDTO = genreService.getTransferObj();
-		for(GenreDTO genre : gensDTO.getAll()) {
+		List<GenreDTO> listGenre = genreService.getAll();
+		for(GenreDTO genre : listGenre) {
 			genresMap.put(genre.getName(), 0);
 		}
 

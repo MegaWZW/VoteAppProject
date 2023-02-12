@@ -22,34 +22,34 @@ public class GenresMemoryDAO implements IGenresDAO {
 	@Override
 	public void addPosition(GenreDTO genre) {
 		if(genre == null) {
-			throw new IllegalArgumentException("Передана пустая ссылка на объект ArtistDTO");
+			throw new IllegalArgumentException("Передана пустая ссылка на объект GenreDTO");
 		}
 		genres.add(genre);
 	}
 
 	@Override
-	public void updatePosition(String toDelete, String toAdd) {
-		if(toDelete == null || toAdd == null) {
+	public void updatePosition(GenreDTO genre) {
+		if(genre == null) {
 			throw new IllegalArgumentException("Передана пустая ссылка на объект(ы)");
 		}
-		if(isExist(toDelete)) {
-			throw new NoSuchElementException("Артиста, имя которого Вы хотите изменить, нет в списке");
+		if(!isExist(genre.getId())) {
+			throw new NoSuchElementException("Жанра, название которого Вы хотите изменить, нет в списке для голосования");
 		}
-		for(GenreDTO genre : genres) {
-			if(genre.getName().equals(toDelete)) {
-				genre.setName(toAdd);
+		for(GenreDTO item : genres) {
+			if(item.getId().equals(genre.getId())) {
+				genre.setName(genre.getName());
 				break;
 			}
 		}
 	}
 
 	@Override
-	public void deletePosition(GenreDTO genre) {
-		if(genre == null) {
-			throw new IllegalArgumentException("Передана пустая ссылка на объект GenreDTO");
+	public void deletePosition(Long id) {
+		if(!isExist(id)) {
+			throw new NoSuchElementException("Жанра, который Вы хотите удалить, нет в списке для голосования");
 		}
 		for(GenreDTO item : genres) {
-			if(item.getName().equals(genre.getName())) {
+			if(item.getId().equals(id)) {
 				genres.remove(item);
 				break;
 			}
@@ -57,9 +57,9 @@ public class GenresMemoryDAO implements IGenresDAO {
 	}
 
 	@Override
-	public GenreDTO getOne(String name_genre) {
+	public GenreDTO getOne(Long id) {
 		for(GenreDTO genre : genres) {
-			if(genre.getName().equals(name_genre)) {
+			if(genre.getId().equals(id)) {
 				return genre;
 			}
 		}
@@ -68,9 +68,9 @@ public class GenresMemoryDAO implements IGenresDAO {
 
 
 	@Override
-	public boolean isExist(String name_genre) {
+	public boolean isExist(Long id) {
 		for(GenreDTO genre : genres) {
-			if(genre.getName().equals(name_genre)) {
+			if(genre.getId().equals(id)) {
 				return true;
 			}
 		}

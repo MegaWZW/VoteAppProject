@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IArtistsDAO {
 	List<ArtistDTO> getAll();
-	ArtistDTO getOne(String name_artist);
+	ArtistDTO getOne(Long id);
 	void addPosition(ArtistDTO artist);
-	void deletePosition(ArtistDTO artist);
-	void updatePosition(String toDelete, String toAdd);
-	boolean isExist(String name);
+	void deletePosition(Long id);
+	void updatePosition(ArtistDTO artist);
+	boolean isExist(Long id);
 }

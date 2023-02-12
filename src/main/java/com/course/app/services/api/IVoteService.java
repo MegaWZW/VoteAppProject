@@ -11,6 +11,4 @@ public interface IVoteService {
 	void save(VoteDTO dto);
 	void validate(VoteDTO dto);
 	List<VoteDTO> getAllVotes();
-	IArtistsDAO getArtistsDAO();
-	IGenresDAO getGenresDAO();
 }

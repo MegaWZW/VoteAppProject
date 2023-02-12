@@ -1,10 +1,10 @@
 package com.course.app.services;
 
-import com.course.app.dao.api.IArtistsDAO;
-import com.course.app.dao.api.IGenresDAO;
 import com.course.app.dao.api.IVotesDAO;
 import com.course.app.dto.GenreDTO;
 import com.course.app.dto.VoteDTO;
+import com.course.app.services.api.IArtistService;
+import com.course.app.services.api.IGenreService;
 import com.course.app.services.api.IVoteService;
 
 import java.util.List;
@@ -13,14 +13,14 @@ import java.util.Set;
 public class VoteService implements IVoteService {
 
 	private final IVotesDAO votesDAO;
-	private final IArtistsDAO artistsDAO;
-	private final IGenresDAO genresDAO;
+	private final IArtistService artistService;
+	private final IGenreService genreService;
 	//private final INotificationService notificationService = null;
 
-	public VoteService(IVotesDAO votesDAO, IArtistsDAO artistsDAO, IGenresDAO genresDAO) {
+	public VoteService(IVotesDAO votesDAO, IArtistService artistService, IGenreService genreService) {
 		this.votesDAO = votesDAO;
-		this.artistsDAO = artistsDAO;
-		this.genresDAO = genresDAO;
+		this.artistService = artistService;
+		this.genreService = genreService;
 	}
 
 	@Override
@@ -54,16 +54,6 @@ public class VoteService implements IVoteService {
 		return votesDAO.getAll();
 	}
 
-	@Override
-	public IArtistsDAO getArtistsDAO() {
-		return this.artistsDAO;
-	}
-
-	@Override
-	public IGenresDAO getGenresDAO() {
-		return this.genresDAO;
-	}
-
 	//	private boolean hasRepeatedElements (String[] toCheck) {
 //		Arrays.sort(toCheck);
 //		for (int i = 0; i < toCheck.length - 1; i++) {
@@ -75,13 +65,13 @@ public class VoteService implements IVoteService {
 //	}
 
 	private boolean checkForProperArtist(VoteDTO dto) {
-		return artistsDAO.isExist(dto.getArtist().getName());
+		return artistService.isExist(dto.getArtist().getId());
 	}
 
 	private boolean checkForProperGenres (VoteDTO dto) {
 		Set<GenreDTO> setGenres = dto.getGenres();
 		for(GenreDTO genre : setGenres) {
-			if(!genresDAO.isExist(genre.getName())){
+			if(!genreService.isExist(genre.getId())){
 				return false;
 			}
 		}
@@ -91,25 +81,15 @@ public class VoteService implements IVoteService {
 	private boolean checkForProperAmountOfChoices(VoteDTO dto) {
 		Set<GenreDTO> setGenres = dto.getGenres();
 		int size = setGenres.size();
-		if(size > 5 || size < 3) {
-			return false;
-		}
-		return true;
+		return size <= 5 && size >= 3;
 	}
 
 	private boolean checkIfInstanceVariablesNotNull(VoteDTO dto) {
-		if(dto.getId() == null || dto.getArtist() == null
-		|| dto.getGenres() == null || dto.getAbout() == null || dto.getDtCreate() == null) {
-
-			return false;
-		}
-		return true;
+		return dto.getId() != null && dto.getArtist() != null
+				&& dto.getGenres() != null && dto.getAbout() != null && dto.getDtCreate() != null;
 	}
 
 	private boolean checkIfIsBlank (String toCheck){
-		if(toCheck.isBlank()) {
-			return false;
-		}
-		return true;
+		return !toCheck.isBlank();
 	}
 }

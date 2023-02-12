@@ -19,13 +19,13 @@ public class Vote implements Serializable {
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinTable(name = "app.vote_artist",
 			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"))
 	private Artist artist;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "app.vote_genre",
 			joinColumns = @JoinColumn(name = "vote_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"))

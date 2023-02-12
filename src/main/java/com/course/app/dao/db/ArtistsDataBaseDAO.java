@@ -6,7 +6,6 @@ import com.course.app.dto.ArtistDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -30,9 +29,8 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
 			Root<Artist> artistRoot = cq.from(Artist.class);
-			CriteriaQuery<Artist> allArtists = cq.select(artistRoot);
-			TypedQuery<Artist> allQuery = em.createQuery(allArtists);
-			List<Artist> artistEntities = allQuery.getResultList();
+			cq.select(artistRoot);
+			List<Artist> artistEntities = em.createQuery(cq).getResultList();
 
 			for(Artist entity : artistEntities) {
 				list.add(new ArtistDTO(entity));
@@ -46,30 +44,37 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public ArtistDTO getOne(String name_artist) {
-		if(!isExist(name_artist)){
-			throw new NoSuchElementException("Такой артист не принимает участие в голосовании");
+	public ArtistDTO getOne(Long id) {
+		if (!isExist(id)) {
+			throw new NoSuchElementException("Артиста с таким id не существует");
+		}
+		EntityManager entityManager = factory.createEntityManager();
+		try{
+			entityManager.getTransaction().begin();
+			Artist entity = entityManager.find(Artist.class, id);
+			if(entity == null) {
+				return null;
+			}else {
+				return new ArtistDTO(entity);
+			}
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			entityManager.close();
 		}
 
-		List<ArtistDTO> listArtist = getAll();
-		for(ArtistDTO item : listArtist) {
-			if(item.getName().equals(name_artist)){
-				return item;
-			}
-		}
-		return null;
 	}
 
 	@Override
 	public void addPosition(ArtistDTO artist) {
-		if(isExist(artist.getName())){
-			throw new IllegalArgumentException("Артист с таким именем уже участвует в голосовании");
+		if(isNameExist(artist.getName())){
+			throw new IllegalArgumentException("Такой артист уже участвует в голосовании");
 		}
 		Artist entity = new Artist(artist);
 		EntityManager em = factory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.persist(entity);
+			em.merge(entity);
 			em.getTransaction().commit();
 		}catch (Exception e) {
 			em.getTransaction().rollback();
@@ -80,12 +85,12 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public void deletePosition(ArtistDTO artist) {
-		if(!isExist(artist.getName())){
-			throw new NoSuchElementException("Артиста, которого Вы хотите удалить, не в БД");
+	public void deletePosition(Long id) {
+		if(!isExist(id)) {
+			throw new NoSuchElementException("Артиста, которого Вы хотите удалить, нет в БД");
 		}
 		EntityManager em = factory.createEntityManager();
-		Artist entity = em.find(Artist.class, artist.getId());
+		Artist entity = em.find(Artist.class, id);
 		try{
 			em.getTransaction().begin();
 			em.remove(entity);
@@ -99,33 +104,17 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public void updatePosition(String toDelete, String toAdd) {
-		if(!isExist(toDelete)){
+	public void updatePosition(ArtistDTO dto) {
+		if(!isExist(dto.getId())){
 			throw new NoSuchElementException("Изменяемого артиста не существует");
 		}
 		EntityManager em = factory.createEntityManager();
-		List<Artist> list = null;
-		Artist toUpdate = null;
+		Artist entity = new Artist(dto);
 		try {
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
-			Root<Artist> artistRoot = cq.from(Artist.class);
-			CriteriaQuery<Artist> allArtists = cq.select(artistRoot);
-			TypedQuery<Artist> allQuery = em.createQuery(allArtists);
-			list = allQuery.getResultList();
-
-			for (Artist entity : list) {
-				if (entity.getName().equals(toDelete)) {
-					toUpdate = entity;
-					break;
-				}
-			}
-			if (toUpdate != null) {
-				toUpdate.setName(toAdd);
-			}
 			em.getTransaction().begin();
-			em.merge(toUpdate);
+			em.merge(entity);
 			em.getTransaction().commit();
+
 		}catch (Exception e) {
 			em.getTransaction().rollback();
 			throw new RuntimeException(e);
@@ -135,13 +124,39 @@ public class ArtistsDataBaseDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public boolean isExist(String name) {
-		List<ArtistDTO> all = getAll();
-		for (ArtistDTO artist : all) {
-			if(artist.getName().equals(name)){
-				return true;
-			}
+	public boolean isExist(Long id) {
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
+			Root<Artist> artistRoot = cq.from(Artist.class);
+			cq.select(artistRoot).where(cb.equal(artistRoot.get("id"), id));
+			List<Artist> artistEntities = em.createQuery(cq).getResultList();
+			int size = artistEntities.size();
+			return size != 0;
+
+		}catch(Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
-		return false;
+	}
+
+	private boolean isNameExist(String name) {
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Artist> cq = cb.createQuery(Artist.class);
+			Root<Artist> artistRoot = cq.from(Artist.class);
+			cq.select(artistRoot).where(cb.like(artistRoot.get("name"), name));
+			List<Artist> artistEntities = em.createQuery(cq).getResultList();
+			int size = artistEntities.size();
+			return size != 0;
+
+		}catch(Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			em.close();
+		}
 	}
 }

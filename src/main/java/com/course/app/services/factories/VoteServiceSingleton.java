@@ -8,7 +8,7 @@ import com.course.app.services.api.IVoteService;
 public class VoteServiceSingleton {
 	private volatile static IVoteService instance;
 
-	private VoteServiceSingleton(){};
+	private VoteServiceSingleton(){}
 
 	public static IVoteService getInstance(){
 		if(instance == null) {
@@ -16,7 +16,8 @@ public class VoteServiceSingleton {
 				if (instance == null) {
 					IDaoProvider daoProvider = ChoiceDaoProvider.getInstance();
 					instance = new VoteService(daoProvider.votesDao(),
-					daoProvider.artistsDao(), daoProvider.genresDao());
+							ArtistServiceSingleton.getInstance(),
+							GenreServiceSingleton.getInstance());
 				}
 			}
 		}

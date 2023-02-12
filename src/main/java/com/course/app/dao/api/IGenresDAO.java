@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface IGenresDAO {
 	List<GenreDTO> getAll();
-	GenreDTO getOne(String name_genre);
+	GenreDTO getOne(Long id);
 	void addPosition(GenreDTO genre);
-	void deletePosition(GenreDTO genre);
-	void updatePosition(String toDelete, String toAdd);
-	boolean isExist(String name_genre);
+	void deletePosition(Long id);
+	void updatePosition(GenreDTO genre);
+	boolean isExist(Long id);
 }

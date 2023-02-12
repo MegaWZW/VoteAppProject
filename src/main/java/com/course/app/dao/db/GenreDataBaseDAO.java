@@ -6,7 +6,6 @@ import com.course.app.dto.GenreDTO;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -30,11 +29,10 @@ public class GenreDataBaseDAO implements IGenresDAO {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
 			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
 			Root<Genre> genreRoot = cq.from(Genre.class);
-			CriteriaQuery<Genre> allGenres = cq.select(genreRoot);
-			TypedQuery<Genre> allQuery = em.createQuery(allGenres);
-			List<Genre> genreEntities = allQuery.getResultList();
+			cq.select(genreRoot);
+			List<Genre> artistEntities = em.createQuery(cq).getResultList();
 
-			for(Genre entity : genreEntities) {
+			for(Genre entity : artistEntities) {
 				list.add(new GenreDTO(entity));
 			}
 		}catch(Exception e) {
@@ -46,30 +44,37 @@ public class GenreDataBaseDAO implements IGenresDAO {
 	}
 
 	@Override
-	public GenreDTO getOne(String name_genre) {
-		if(!isExist(name_genre)){
-			throw new NoSuchElementException("Такой артист не принимает участие в голосовании");
+	public GenreDTO getOne(Long id) {
+		if (!isExist(id)) {
+			throw new NoSuchElementException("Жанра с таким id не существует");
+		}
+		EntityManager entityManager = factory.createEntityManager();
+		try{
+			entityManager.getTransaction().begin();
+			Genre entity = entityManager.find(Genre.class, id);
+			if(entity == null) {
+				return null;
+			}else {
+				return new GenreDTO(entity);
+			}
+		}catch (Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			entityManager.close();
 		}
 
-		List<GenreDTO> listGenres = getAll();
-		for(GenreDTO item : listGenres) {
-			if(item.getName().equals(name_genre)){
-				return item;
-			}
-		}
-		return null;
 	}
 
 	@Override
 	public void addPosition(GenreDTO genre) {
-		if(isExist(genre.getName())){
-			throw new IllegalArgumentException("Жанр с таким названием уже участвует в голосовании");
+		if(isNameExist(genre.getName())){
+			throw new IllegalArgumentException("Такой жанр уже участвует в голосовании");
 		}
 		Genre entity = new Genre(genre);
 		EntityManager em = factory.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			em.persist(entity);
+			em.merge(entity);
 			em.getTransaction().commit();
 		}catch (Exception e) {
 			em.getTransaction().rollback();
@@ -80,12 +85,12 @@ public class GenreDataBaseDAO implements IGenresDAO {
 	}
 
 	@Override
-	public void deletePosition(GenreDTO genre) {
-		if(!isExist(genre.getName())){
-			throw new NoSuchElementException("Жанра, который Вы хотите удалить, не в БД");
+	public void deletePosition(Long id) {
+		if(!isExist(id)) {
+			throw new NoSuchElementException("Жанра, который Вы хотите удалить, нет в БД");
 		}
 		EntityManager em = factory.createEntityManager();
-		Genre entity = em.find(Genre.class, genre.getId());
+		Genre entity = em.find(Genre.class, id);
 		try{
 			em.getTransaction().begin();
 			em.remove(entity);
@@ -99,33 +104,17 @@ public class GenreDataBaseDAO implements IGenresDAO {
 	}
 
 	@Override
-	public void updatePosition(String toDelete, String toAdd) {
-		if(!isExist(toDelete)){
+	public void updatePosition(GenreDTO dto) {
+		if(!isExist(dto.getId())){
 			throw new NoSuchElementException("Изменяемого жанра не существует");
 		}
 		EntityManager em = factory.createEntityManager();
-		List<Genre> list = null;
-		Genre toUpdate = null;
+		Genre entity = new Genre(dto);
 		try {
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
-			Root<Genre> genreRoot = cq.from(Genre.class);
-			CriteriaQuery<Genre> allGenres = cq.select(genreRoot);
-			TypedQuery<Genre> allQuery = em.createQuery(allGenres);
-			list = allQuery.getResultList();
-
-			for (Genre entity : list) {
-				if (entity.getName().equals(toDelete)) {
-					toUpdate = entity;
-					break;
-				}
-			}
-			if (toUpdate != null) {
-				toUpdate.setName(toAdd);
-			}
 			em.getTransaction().begin();
-			em.merge(toUpdate);
+			em.merge(entity);
 			em.getTransaction().commit();
+
 		}catch (Exception e) {
 			em.getTransaction().rollback();
 			throw new RuntimeException(e);
@@ -135,13 +124,39 @@ public class GenreDataBaseDAO implements IGenresDAO {
 	}
 
 	@Override
-	public boolean isExist(String name) {
-		List<GenreDTO> all = getAll();
-		for (GenreDTO genre : all) {
-			if(genre.getName().equals(name)){
-				return true;
-			}
+	public boolean isExist(Long id) {
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
+			Root<Genre> genreRoot = cq.from(Genre.class);
+			cq.select(genreRoot).where(cb.equal(genreRoot.get("id"), id));
+			List<Genre> genreEntities = em.createQuery(cq).getResultList();
+			int size = genreEntities.size();
+			return size != 0;
+
+		}catch(Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			em.close();
 		}
-		return false;
+	}
+
+	private boolean isNameExist(String name) {
+		EntityManager em = factory.createEntityManager();
+		try{
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Genre> cq = cb.createQuery(Genre.class);
+			Root<Genre> genreRoot = cq.from(Genre.class);
+			cq.select(genreRoot).where(cb.like(genreRoot.get("name"), name));
+			List<Genre> genreEntities = em.createQuery(cq).getResultList();
+			int size = genreEntities.size();
+			return size != 0;
+
+		}catch(Exception e) {
+			throw new RuntimeException(e);
+		}finally {
+			em.close();
+		}
 	}
 }

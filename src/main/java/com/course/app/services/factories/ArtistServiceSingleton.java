@@ -7,7 +7,7 @@ import com.course.app.services.api.IArtistService;
 public class ArtistServiceSingleton {
 	private volatile static IArtistService instance;
 
-	private ArtistServiceSingleton(){};
+	private ArtistServiceSingleton(){}
 
 	public static IArtistService getInstance() {
 		if (instance == null) {

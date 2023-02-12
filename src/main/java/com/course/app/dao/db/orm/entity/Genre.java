@@ -1,6 +1,5 @@
 package com.course.app.dao.db.orm.entity;
 
-import com.course.app.dto.ArtistDTO;
 import com.course.app.dto.GenreDTO;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,6 +23,7 @@ public class Genre implements Serializable {
 	}
 
 	public Genre(GenreDTO dto) {
+		this.id = dto.getId();
 		this.name = dto.getName();
 	}
 

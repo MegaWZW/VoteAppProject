@@ -6,7 +6,7 @@ import com.course.app.services.api.IStatisticService;
 public class StatisticServiceSingleton {
 	private volatile static IStatisticService instance;
 
-	private StatisticServiceSingleton(){};
+	private StatisticServiceSingleton(){}
 
 	public static IStatisticService getInstance() {
 		if(instance == null) {

@@ -23,6 +23,7 @@ public class Artist implements Serializable {
 	}
 
 	public Artist(ArtistDTO dto) {
+		this.id = dto.getId();
 		this.name = dto.getName();
 	}
 

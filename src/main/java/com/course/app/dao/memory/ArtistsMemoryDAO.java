@@ -20,13 +20,13 @@ public class ArtistsMemoryDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public ArtistDTO getOne(String name_artist) {
+	public ArtistDTO getOne(Long id) {
 		for(ArtistDTO artist : artists) {
-			if(artist.getName().equals(name_artist)) {
+			if(artist.getId().equals(id)) {
 				return artist;
 			}
 		}
-		throw new NoSuchElementException("Артист с таким именем не принимает участие в голосовании");
+		throw new NoSuchElementException("Такой артист не принимает участи в голосовании");
 	}
 
 	@Override
@@ -38,12 +38,12 @@ public class ArtistsMemoryDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public void deletePosition(ArtistDTO artist) {
-		if(artist == null) {
-			throw new IllegalArgumentException("Передана пустая ссылка на объект ArtistDTO");
+	public void deletePosition(Long id) {
+		if(!isExist(id)) {
+			throw new NoSuchElementException("Артиста, которого Вы хотите удалить нет в голосовании");
 		}
 		for(ArtistDTO item : artists) {
-			if(item.getName().equals(artist.getName())) {
+			if(item.getId().equals(id)) {
 				artists.remove(item);
 				break;
 			}
@@ -51,25 +51,25 @@ public class ArtistsMemoryDAO implements IArtistsDAO {
 	}
 
 	@Override
-	public void updatePosition(String toDelete, String toAdd) {
-		if(toDelete == null || toAdd == null) {
+	public void updatePosition(ArtistDTO artist) {
+		if(artist == null) {
 			throw new IllegalArgumentException("Передана пустая ссылка на объект(ы)");
 		}
-		if(isExist(toDelete)) {
+		if(!isExist(artist.getId())) {
 			throw new NoSuchElementException("Артиста, имя которого Вы хотите изменить, нет в списке");
 		}
-		for(ArtistDTO artist : artists) {
-			if(artist.getName().equals(toDelete)) {
-				artist.setName(toAdd);
+		for(ArtistDTO item : artists) {
+			if(item.getId().equals(artist.getId())) {
+				item.setName(artist.getName());
 				break;
 			}
 		}
 	}
 
 	@Override
-	public boolean isExist(String name) {
+	public boolean isExist(Long id) {
 		for(ArtistDTO artist : artists) {
-			if(artist.getName().equals(name)) {
+			if(artist.getId().equals(id)) {
 				return true;
 			}
 		}

@@ -60,6 +60,7 @@ public class VotesDataBaseDAO implements IVotesDAO {
 			em.getTransaction().commit();
 		} catch (Exception e) {
 			em.getTransaction().rollback();
+			System.out.println(e.getMessage());
 			throw  new RuntimeException(e);
 		} finally {
 			em.close();
